@@ -36,24 +36,23 @@ class SO101Bimanual(Robot):
 
         # Create individual SO101 followers for left and right arms
         from .config_so101_follower import SO101FollowerConfig
-        
+        # Pass calibration_dir to each arm config
         left_config = SO101FollowerConfig(
             port=config.left_port,
             id=f"{config.id}_left" if config.id else "left_arm",
             max_relative_target=config.max_relative_target,
             disable_torque_on_disconnect=config.disable_torque_on_disconnect,
+            calibration_dir=getattr(config, "calibration_dir", None),
         )
-        
         right_config = SO101FollowerConfig(
             port=config.right_port,
             id=f"{config.id}_right" if config.id else "right_arm",
             max_relative_target=config.max_relative_target,
             disable_torque_on_disconnect=config.disable_torque_on_disconnect,
+            calibration_dir=getattr(config, "calibration_dir", None),
         )
-
         self.left_arm = SO101Follower(left_config)
         self.right_arm = SO101Follower(right_config)
-        
         # Set up cameras
         self.cameras = make_cameras_from_configs(config.cameras)
 
@@ -92,10 +91,9 @@ class SO101Bimanual(Robot):
         return features
 
     def connect(self, calibrate: bool = True) -> None:
-        """Connect both arms and cameras."""
+        """Connect both arms and cameras, loading calibration if available."""
         self.left_arm.connect(calibrate=calibrate)
         self.right_arm.connect(calibrate=calibrate)
-        
         for camera in self.cameras.values():
             camera.connect()
 
@@ -171,3 +169,8 @@ class SO101Bimanual(Robot):
     def is_connected(self) -> bool:
         """Check if both arms are connected."""
         return self.left_arm.is_connected and self.right_arm.is_connected
+
+    @property
+    def is_calibrated(self) -> bool:
+        """Returns True if both arms are calibrated (from cache or interactive)."""
+        return self.left_arm.is_calibrated and self.right_arm.is_calibrated
