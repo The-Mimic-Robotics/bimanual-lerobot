@@ -37,34 +37,34 @@ python -m lerobot.find_port
 
 # Setup and configure motors (run this for each robot - leader and followers)
 # For follower left arm:
+
 python -m lerobot.setup_motors \
     --robot-type=so101_follower \
-    --port=/dev/tty.usbmodem58760431541
-
+    --port=/dev/ttyACM2
 # For follower right arm:
 python -m lerobot.setup_motors \
     --robot-type=so101_follower \
     --port=/dev/tty.usbmodem58760431542
 
-# For leader arm:
+# For leader left arm: /dev/ttyACM0
 python -m lerobot.setup_motors \
     --robot-type=so101_leader \
     --port=/dev/tty.usbmodem58760431551
 
 # Set motors to position control mode (run for each robot)
-# For follower left arm:
+# For follower left arm:  /dev/ttyACM2
 python -m lerobot.set_motors \
     --robot-type=so101_follower \
     --port=/dev/tty.usbmodem58760431541 \
     --operating-mode=position
 
-# For follower right arm:
+# For follower right arm:  /dev/ttyACM1
 python -m lerobot.set_motors \
     --robot-type=so101_follower \
     --port=/dev/tty.usbmodem58760431542 \
     --operating-mode=position
 
-# For leader arm:
+# For leader right arm: /dev/ttyACM3
 python -m lerobot.set_motors \
     --robot-type=so101_leader \
     --port=/dev/tty.usbmodem58760431551 \
