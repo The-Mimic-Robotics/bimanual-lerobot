@@ -130,28 +130,24 @@ def setup_motors_main():
         if args.robot_type == "so101_follower":
             from lerobot.robots.so101_follower import SO101FollowerConfig
             config = SO101FollowerConfig(
-                type=args.robot_type,
                 port=args.robot_port,
                 id=args.robot_id or f"robot_{args.robot_type}"
             )
         elif args.robot_type == "so100_follower":
             from lerobot.robots.so100_follower import SO100FollowerConfig
             config = SO100FollowerConfig(
-                type=args.robot_type,
                 port=args.robot_port,
                 id=args.robot_id or f"robot_{args.robot_type}"
             )
         elif args.robot_type == "koch_follower":
             from lerobot.robots.koch_follower import KochFollowerConfig
             config = KochFollowerConfig(
-                type=args.robot_type,
                 port=args.robot_port,
                 id=args.robot_id or f"robot_{args.robot_type}"
             )
         elif args.robot_type == "lekiwi":
             from lerobot.robots.lekiwi import LekiwiConfig
             config = LekiwiConfig(
-                type=args.robot_type,
                 port=args.robot_port,
                 id=args.robot_id or f"robot_{args.robot_type}"
             )
@@ -165,21 +161,18 @@ def setup_motors_main():
         if args.teleop_type == "so101_leader":
             from lerobot.teleoperators.so101_leader import SO101LeaderConfig
             config = SO101LeaderConfig(
-                type=args.teleop_type,
                 port=args.teleop_port,
                 id=args.teleop_id or f"teleop_{args.teleop_type}"
             )
         elif args.teleop_type == "so100_leader":
             from lerobot.teleoperators.so100_leader import SO100LeaderConfig
             config = SO100LeaderConfig(
-                type=args.teleop_type,
                 port=args.teleop_port,
                 id=args.teleop_id or f"teleop_{args.teleop_type}"
             )
         elif args.teleop_type == "koch_leader":
             from lerobot.teleoperators.koch_leader import KochLeaderConfig
             config = KochLeaderConfig(
-                type=args.teleop_type,  
                 port=args.teleop_port,
                 id=args.teleop_id or f"teleop_{args.teleop_type}"
             )
