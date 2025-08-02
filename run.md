@@ -83,6 +83,44 @@ python -m lerobot.set_motors \
     --operating-mode=position
 ```
 
+
+
+**Left follower arm:**
+```bash
+python -m lerobot.calibrate \
+    --robot.type=so101_follower \
+    --robot.port=/dev/ttyACM2 \
+    --robot.id=my_follower_left
+```
+
+**Right follower arm:**
+```bash
+python -m lerobot.calibrate \
+    --robot.type=so101_follower \
+    --robot.port=/dev/ttyACM1 \
+    --robot.id=my_follower_right
+```
+
+### For Leader Arms (teleoperators):
+
+**Left leader arm:**
+```bash
+python -m lerobot.calibrate \
+    --teleop.type=so101_leader \
+    --teleop.port=/dev/ttyACM0 \
+    --teleop.id=my_leader_left
+```
+
+**Right leader arm:**
+```bash
+python -m lerobot.calibrate \
+    --teleop.type=so101_leader \
+    --teleop.port=/dev/ttyACM3 \
+    --teleop.id=my_leader_right
+```
+
+
+
 ## 3. Test Teleoperation
 ```bash
 # First, test basic teleoperation to make sure everything works
