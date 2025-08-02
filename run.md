@@ -40,34 +40,46 @@ python -m lerobot.find_port
 
 python -m lerobot.setup_motors \
     --robot-type=so101_follower \
-    --port=/dev/ttyACM2
+    --port=/dev/tty.usbmodem58760431541
+
 # For follower right arm:
 python -m lerobot.setup_motors \
-    --robot-type=so101_follower \
-    --port=/dev/tty.usbmodem58760431542
+    --robot.type=so101_follower \
+    --robot.port=/dev/ttyACM1
 
-# For leader left arm: /dev/ttyACM0
+# For leader left arm:
 python -m lerobot.setup_motors \
-    --robot-type=so101_leader \
-    --port=/dev/tty.usbmodem58760431551
+    --teleop.type=so101_leader \
+    --teleop.port=/dev/ttyACM0
+
+# For leader arm:
+python -m lerobot.setup_motors \
+    --teleop.type=so101_leader \
+    --teleop.port=/dev/ttyACM3
 
 # Set motors to position control mode (run for each robot)
 # For follower left arm:  /dev/ttyACM2
 python -m lerobot.set_motors \
     --robot-type=so101_follower \
-    --port=/dev/tty.usbmodem58760431541 \
+    --port=/dev/ttyACM2 \
     --operating-mode=position
 
 # For follower right arm:  /dev/ttyACM1
 python -m lerobot.set_motors \
     --robot-type=so101_follower \
-    --port=/dev/tty.usbmodem58760431542 \
+    --port=/dev/ttyACM1 \
     --operating-mode=position
 
-# For leader right arm: /dev/ttyACM3
+# For leader left arm:
 python -m lerobot.set_motors \
     --robot-type=so101_leader \
-    --port=/dev/tty.usbmodem58760431551 \
+    --port=/dev/ttyACM0 \
+    --operating-mode=position
+
+# For leader arm:
+python -m lerobot.set_motors \
+    --robot-type=so101_leader \
+    --port=/dev/ttyACM3 \
     --operating-mode=position
 ```
 
@@ -77,12 +89,12 @@ python -m lerobot.set_motors \
 # UPDATE: Based on your find_cameras output (video0 and video2), using only 2 cameras
 python -m lerobot.teleoperate \
     --robot.type=so101_bimanual \
-    --robot.left_port=/dev/tty.usbmodem58760431541 \
-    --robot.right_port=/dev/tty.usbmodem58760431542 \
+    --robot.left_port=/dev/ttyACM2 \
+    --robot.right_port=/dev/ttyACM1 \
     --robot.cameras='{"front": {"type": "opencv", "index_or_path": 0, "width": 640, "height": 480, "fps": 30}, "top": {"type": "opencv", "index_or_path": 2, "width": 640, "height": 480, "fps": 30}}' \
     --robot.id=my_bimanual_setup \
     --teleop.type=so101_leader \
-    --teleop.port=/dev/tty.usbmodem58760431551 \
+    --teleop.port=/dev/ttyACM0 \
     --teleop.id=my_leader_arm \
     --display_data=true
 
@@ -95,12 +107,12 @@ python -m lerobot.bi_teleoperate
 # UPDATE: Based on your find_cameras output (video0 and video2), using only 2 cameras
 python -m lerobot.record \
     --robot.type=so101_bimanual \
-    --robot.left_port=/dev/tty.usbmodem58760431541 \
-    --robot.right_port=/dev/tty.usbmodem58760431542 \
+    --robot.left_port=/dev/ttyACM2 \
+    --robot.right_port=/dev/ttyACM1 \
     --robot.cameras='{"front": {"type": "opencv", "index_or_path": 0, "width": 640, "height": 480, "fps": 30}, "top": {"type": "opencv", "index_or_path": 2, "width": 640, "height": 480, "fps": 30}}' \
     --robot.id=my_bimanual_setup \
     --teleop.type=so101_leader \
-    --teleop.port=/dev/tty.usbmodem58760431551 \
+    --teleop.port=/dev/ttyACM0 \
     --teleop.id=my_leader_arm \
     --dataset.repo_id=my_local_dataset \
     --dataset.single_task="Pick up the red cube with the left hand and place it in the bin" \
@@ -151,8 +163,8 @@ python -m lerobot.scripts.train \
 # Using local evaluation dataset
 python -m lerobot.record \
     --robot.type=so101_bimanual \
-    --robot.left_port=/dev/tty.usbmodem58760431541 \
-    --robot.right_port=/dev/tty.usbmodem58760431542 \
+    --robot.left_port=/dev/ttyACM2 \
+    --robot.right_port=/dev/ttyACM1 \
     --robot.cameras='{"front": {"type": "opencv", "index_or_path": 0, "width": 640, "height": 480, "fps": 30}, "top": {"type": "opencv", "index_or_path": 2, "width": 640, "height": 480, "fps": 30}}' \
     --robot.id=my_bimanual_setup \
     --dataset.repo_id=my_local_eval_dataset \
