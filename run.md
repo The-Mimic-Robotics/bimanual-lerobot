@@ -40,7 +40,7 @@ python -m lerobot.find_port
 
 python -m lerobot.setup_motors \
     --robot-type=so101_follower \
-    --port=/dev/tty.usbmodem58760431541
+    --port=/dev/ttyACM2
 
 # For follower right arm:
 python -m lerobot.setup_motors \
