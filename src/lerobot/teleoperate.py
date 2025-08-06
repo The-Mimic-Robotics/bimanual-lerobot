@@ -33,6 +33,7 @@ python -m lerobot.teleoperate \
 import logging
 import time
 from dataclasses import asdict, dataclass
+from pathlib import Path
 from pprint import pformat
 
 import draccus
@@ -113,10 +114,19 @@ def teleoperate(cfg: TeleoperateConfig):
     if cfg.display_data:
         _init_rerun(session_name="teleoperation")
 
+    # Ensure teleop config uses correct calibration_dir and id
+    if hasattr(cfg.teleop, 'calibration_dir'):
+        teleop_calib_dir = cfg.teleop.calibration_dir or Path(".cache/calibration/so101_bimanual")
+    else:
+        teleop_calib_dir = Path(".cache/calibration/so101_bimanual")
+    teleop_id = cfg.teleop.id
+    # Patch teleop config
+    cfg.teleop.calibration_dir = teleop_calib_dir
+
     teleop = make_teleoperator_from_config(cfg.teleop)
     robot = make_robot_from_config(cfg.robot)
 
-    teleop.connect()
+    teleop.connect(calibrate=False)
     robot.connect()
 
     try:

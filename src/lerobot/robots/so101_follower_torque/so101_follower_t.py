@@ -18,6 +18,7 @@ import logging
 import time
 from functools import cached_property
 from typing import Any
+from pathlib import Path
 
 import numpy as np
 import pinocchio as pin
@@ -89,28 +90,39 @@ class SO101FollowerT(Robot):
     def __init__(self, config: SO101FollowerTConfig):
         super().__init__(config)
         self.config = config
-
-        # Ensure calibration is loaded before creating the bus
-        if self.calibration_fpath.is_file() and not self.calibration:
-            self._load_calibration()
-
+        norm_mode_body = MotorNormMode.DEGREES if getattr(config, 'use_degrees', False) else MotorNormMode.RANGE_M100_100
         self.bus = FeetechMotorsBus(
             port=self.config.port,
             motors={
-                "shoulder_pan": Motor(1, "hls3625", MotorNormMode.DEGREES),
-                "shoulder_lift": Motor(2, "hls3625", MotorNormMode.DEGREES),
-                "elbow_flex": Motor(3, "hls3625", MotorNormMode.DEGREES),
-                "wrist_flex": Motor(4, "hls3625", MotorNormMode.DEGREES),
-                "wrist_roll": Motor(5, "hls3625", MotorNormMode.DEGREES),
-                "gripper": Motor(6, "hls3625", MotorNormMode.DEGREES),
+                "shoulder_pan": Motor(1, "sts3215", norm_mode_body),
+                "shoulder_lift": Motor(2, "sts3215", norm_mode_body),
+                "elbow_flex": Motor(3, "sts3215", norm_mode_body),
+                "wrist_flex": Motor(4, "sts3215", norm_mode_body),
+                "wrist_roll": Motor(5, "sts3215", norm_mode_body),
+                "gripper": Motor(6, "sts3215", MotorNormMode.RANGE_0_100),
             },
             calibration=self.calibration,
         )
         self.cameras = make_cameras_from_configs(config.cameras)
 
-        self.pin_robot = pin.RobotWrapper.BuildFromURDF(
-            "src/lerobot/SO101/so101_new_calib.urdf", "src/lerobot/SO101"
-        )
+        urdf_path = Path(__file__).parent.parent.parent / "SO101" / "so101_new_calib.urdf"
+        # If mesh files are not found, initialize without visual and collision models
+        try:
+            self.pin_robot = pin.RobotWrapper.BuildFromURDF(
+                str(urdf_path), str(urdf_path.parent)
+            )
+        except ValueError as e:
+            if "could not be found" in str(e):
+                # Initialize robot with only kinematics model, no visual/collision
+                self.pin_robot = pin.RobotWrapper.BuildFromURDF(
+                    str(urdf_path), str(urdf_path.parent),
+                    pin.JointModelFreeFlyer(),
+                    root_joint=None,
+                    verbose=True,
+                    buildGeomFromUrdf=False
+                )
+            else:
+                raise
 
         flip = {
             "shoulder_pan": True,

@@ -15,6 +15,7 @@
 # limitations under the License.
 
 import logging
+from pathlib import Path
 from typing import Any
 
 from lerobot.cameras import make_cameras_from_configs
@@ -34,25 +35,35 @@ class SO101Bimanual(Robot):
         super().__init__(config)
         self.config = config
 
-        # Create individual SO101 followers for left and right arms
+        # Use explicit calibration_dir for each arm
         from .config_so101_follower import SO101FollowerConfig
-        # Pass calibration_dir to each arm config
+        # Build calibration paths for left and right arms
+        calibration_dir = config.calibration_dir or Path(".cache/calibration/so101_bimanual")
+        left_id = f"{config.id}_left" if config.id else "left_arm"
+        right_id = f"{config.id}_right" if config.id else "right_arm"
+        left_calibration = calibration_dir / f"{left_id}.json"
+        right_calibration = calibration_dir / f"{right_id}.json"
         left_config = SO101FollowerConfig(
             port=config.left_port,
-            id=f"{config.id}_left" if config.id else "left_arm",
+            id=left_id,
             max_relative_target=config.max_relative_target,
             disable_torque_on_disconnect=config.disable_torque_on_disconnect,
-            calibration_dir=getattr(config, "calibration_dir", None),
+            calibration_dir=calibration_dir,
         )
         right_config = SO101FollowerConfig(
             port=config.right_port,
-            id=f"{config.id}_right" if config.id else "right_arm",
+            id=right_id,
             max_relative_target=config.max_relative_target,
             disable_torque_on_disconnect=config.disable_torque_on_disconnect,
-            calibration_dir=getattr(config, "calibration_dir", None),
+            calibration_dir=calibration_dir,
         )
         self.left_arm = SO101Follower(left_config)
         self.right_arm = SO101Follower(right_config)
+        # Force load calibration from file if present
+        if left_calibration.is_file():
+            self.left_arm._load_calibration(left_calibration)
+        if right_calibration.is_file():
+            self.right_arm._load_calibration(right_calibration)
         # Set up cameras
         self.cameras = make_cameras_from_configs(config.cameras)
 
