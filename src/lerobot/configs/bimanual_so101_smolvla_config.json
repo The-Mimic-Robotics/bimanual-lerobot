@@ -1,0 +1,146 @@
+{
+  "# Bimanual SO101 Configuration for SmolVLA Training": "This config supports training SmolVLA on bimanual SO101 data without URDF schemas",
+  
+  "robot": {
+    "type": "bi_so101_follower",
+    "left_arm_port": "/dev/ttyACM0",
+    "right_arm_port": "/dev/ttyACM1", 
+    "id": "bimanual_so101_robot",
+    "left_arm_use_degrees": true,
+    "right_arm_use_degrees": true,
+    "cameras": {
+      "left_wrist": {
+        "type": "opencv",
+        "index_or_path": 0,
+        "width": 640,
+        "height": 480,
+        "fps": 30
+      },
+      "right_wrist": {
+        "type": "opencv", 
+        "index_or_path": 1,
+        "width": 640,
+        "height": 480,
+        "fps": 30
+      },
+      "left_context": {
+        "type": "realsense",
+        "serial_number": "CHANGE_TO_YOUR_LEFT_REALSENSE_SERIAL",
+        "width": 640,
+        "height": 480,
+        "fps": 30
+      },
+      "right_context": {
+        "type": "realsense",
+        "serial_number": "CHANGE_TO_YOUR_RIGHT_REALSENSE_SERIAL", 
+        "width": 640,
+        "height": 480,
+        "fps": 30
+      }
+    }
+  },
+  
+  "teleop": {
+    "type": "bi_so101_leader",
+    "left_arm_port": "/dev/ttyACM2",
+    "right_arm_port": "/dev/ttyACM3",
+    "id": "bimanual_so101_leader",
+    "use_degrees": true
+  },
+  
+  "# Recording Configuration": "Settings for data collection",
+  "recording": {
+    "fps": 30,
+    "episode_time_s": 60,
+    "reset_time_s": 10,
+    "warmup_time_s": 5,
+    "num_episodes": 50,
+    "push_to_hub": true,
+    "single_task": "Bimanual manipulation: pick with left arm, handover to right arm, place in target"
+  },
+  
+  "# SmolVLA Training Configuration": "No URDF needed - direct joint space control",
+  "smolvla_training": {
+    "policy_type": "smolvla",
+    "pretrained_model": "lerobot/smolvla_base",
+    "batch_size": 32,
+    "steps": 20000,
+    "learning_rate": 1e-4,
+    "device": "cuda",
+    "wandb_enable": true,
+    "chunk_size": 50,
+    "n_action_steps": 50,
+    "# Key advantage": "SmolVLA works directly with joint positions - no kinematic models required"
+  },
+  
+  "# Action Space": "Bimanual joint control (12 DOF total)",
+  "action_space": {
+    "left_arm": [
+      "left_joint_1.pos",
+      "left_joint_2.pos", 
+      "left_joint_3.pos",
+      "left_joint_4.pos",
+      "left_joint_5.pos",
+      "left_joint_6.pos"
+    ],
+    "right_arm": [
+      "right_joint_1.pos",
+      "right_joint_2.pos",
+      "right_joint_3.pos", 
+      "right_joint_4.pos",
+      "right_joint_5.pos",
+      "right_joint_6.pos"
+    ]
+  },
+  
+  "# Observation Space": "Multi-modal inputs for SmolVLA",
+  "observation_space": {
+    "state": "12 joint positions (6 per arm)",
+    "images": {
+      "left_wrist": "320x240 RGB - Hand-eye coordination for left arm",
+      "right_wrist": "320x240 RGB - Hand-eye coordination for right arm", 
+      "left_context": "320x240 RGB - External spatial context",
+      "right_context": "320x240 RGB - External spatial context"
+    },
+    "language": "Natural language task instructions"
+  },
+  
+  "# Recommended Tasks": "Good bimanual tasks for SmolVLA training",
+  "recommended_tasks": [
+    "Pick object with left arm, place in right hand",
+    "Handover objects between arms",
+    "Collaborative lifting of large objects",
+    "Sequential assembly (left positions, right fastens)",
+    "Sorting tasks (each arm handles different types)"
+  ],
+  
+  "# Training Tips": "Best practices for bimanual SmolVLA",
+  "training_tips": {
+    "data_collection": {
+      "episodes_per_variation": 10,
+      "total_episodes": "50+ recommended",
+      "task_variations": "Different object positions, handover points",
+      "camera_consistency": "Keep external cameras fixed during recording"
+    },
+    "model_training": {
+      "start_simple": "Begin with single-arm tasks, progress to bimanual",
+      "batch_size": "Start with 32, increase if GPU memory allows", 
+      "steps": "20k steps usually sufficient for 50 episodes",
+      "validation": "Test on unseen object positions and orientations"
+    },
+    "deployment": {
+      "safety": "Test in simulation first if available",
+      "monitoring": "Watch for coordination failures between arms",
+      "fallback": "Have manual override ready during initial deployment"
+    }
+  },
+  
+  "# Hardware Notes": "Important setup considerations",
+  "hardware_notes": {
+    "calibration": "Both follower and leader arms must be calibrated",
+    "synchronization": "4 cameras should be time-synchronized",
+    "cable_management": "Ensure robot arm cables don't interfere with movement",
+    "workspace": "Set appropriate bounds for both arms to avoid collisions",
+    "lighting": "Consistent lighting important for vision models"
+  }
+}
