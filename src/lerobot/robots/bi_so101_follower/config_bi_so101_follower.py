@@ -42,27 +42,27 @@ class BiSO101FollowerConfig(RobotConfig):
     # 2 OpenCV cameras mounted on the robot
     cameras: dict[str, CameraConfig] = field(default_factory=lambda: {
         "realsense_left": RealSenseCameraConfig(
-            serial_number=None,  # Set your left RealSense serial number
+            serial_number_or_name=None,  # Set your left RealSense serial number
             width=640,
             height=480,
             fps=30,
         ),
         "realsense_right": RealSenseCameraConfig(
-            serial_number=None,  # Set your right RealSense serial number
+            serial_number_or_name=None,  # Set your right RealSense serial number
             width=640,
             height=480,
             fps=30,
         ),
         "robot_left": OpenCVCameraConfig(
-            index_or_path=0,  # Set your left robot camera index/path
+            index_or_path="/dev/v4l/by-path/pci-0000:09:00.3-usb-0:2:1.0-video-index0",  # Working camera (stable USB path)
             width=640,
             height=480,
             fps=30,
         ),
-        "robot_right": OpenCVCameraConfig(
-            index_or_path=1,  # Set your right robot camera index/path
-            width=640,
-            height=480,
-            fps=30,
-        ),
+        # "robot_right": OpenCVCameraConfig(
+        #     index_or_path="/dev/v4l/by-path/pci-0000:09:00.3-usb-0:1:1.0-video-index0",  # Disabled - camera not working
+        #     width=640,
+        #     height=480,
+        #     fps=30,
+        # ),
     })
