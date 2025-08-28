@@ -50,6 +50,13 @@ python -m lerobot.teleoperate \
 ```
 
 """
+"""
+python -m lerobot.teleoperate   --robot.type=bi_so101_follower   --robot.left_arm_port=/dev/ttyACM3   --robot.right_arm_port=/dev/ttyACM2   --robot.id=bimanual_so101_setup   --robot.cameras='{ }'   --teleop.type=bi_so101_leader   --teleop.left_arm_port=/dev/ttyACM0   --teleop.right_arm_port=/dev/ttyACM1   --teleop.id=bimanual_leader_setup   --display_data=true
+
+"""
+"""
+/home/orenda/.cache/huggingface/lerobot/calibration/robots/so101_follower/bimanual_so101_setup_right.json
+"""
 
 import logging
 import time
