@@ -3,7 +3,8 @@
 # BiManual LeRobot Deployment Script
 # This script sets up the complete bimanual robot system on a new computer
 
-set -e  # Exit on any error
+# Remove set -e to handle errors gracefully
+# set -e  # Exit on any error
 
 echo "🤖 BiManual LeRobot Deployment Script"
 echo "======================================"
@@ -77,22 +78,104 @@ else
     print_warning "- udev"
 fi
 
-print_step "2. Setting up Python environment..."
+print_step "2. Setting up Python environment with Conda..."
 
-# Create virtual environment if it doesn't exist
-if [[ ! -d "venv" ]]; then
-    python3 -m venv venv
-    print_status "Created virtual environment"
+# Check if conda is installed
+if ! command -v conda &> /dev/null; then
+    print_error "Conda is not installed or not in PATH"
+    print_status "Installing Miniconda..."
+    
+    # Download and install miniconda
+    cd /tmp
+    if [[ "$(uname -m)" == "x86_64" ]]; then
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+    elif [[ "$(uname -m)" == "aarch64" ]]; then
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-aarch64.sh -O miniconda.sh  
+    else
+        print_error "Unsupported architecture: $(uname -m)"
+        exit 1
+    fi
+    
+    chmod +x miniconda.sh
+    ./miniconda.sh -b -p $HOME/miniconda3
+    
+    # Add conda to PATH
+    export PATH="$HOME/miniconda3/bin:$PATH"
+    echo 'export PATH="$HOME/miniconda3/bin:$PATH"' >> ~/.bashrc
+    
+    # Initialize conda
+    $HOME/miniconda3/bin/conda init bash
+    source ~/.bashrc
+    
+    print_status "Miniconda installed successfully"
+    cd - > /dev/null
+else
+    print_status "Conda found: $(which conda)"
 fi
 
-# Activate virtual environment
-source venv/bin/activate
-print_status "Activated virtual environment"
+# Initialize conda in this script
+eval "$(conda shell.bash hook)" 2>/dev/null || {
+    print_warning "Failed to initialize conda, trying manual setup..."
+    if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
+        source "$HOME/miniconda3/etc/profile.d/conda.sh"
+    elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
+        source "$HOME/anaconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="$HOME/miniconda3/bin:$PATH"
+    fi
+}
 
-# Install Python dependencies
+# Create or activate lerobot environment
+CONDA_ENV="lerobot"
+if conda env list | grep -q "^${CONDA_ENV} "; then
+    print_status "Found existing ${CONDA_ENV} environment"
+    conda activate ${CONDA_ENV}
+else
+    print_status "Creating new conda environment: ${CONDA_ENV}"
+    conda create -n ${CONDA_ENV} python=3.10 -y
+    conda activate ${CONDA_ENV}
+fi
+
+print_status "Activated conda environment: ${CONDA_ENV}"
+
+# Install conda dependencies first
+print_status "Installing conda dependencies..."
+conda install -y -c conda-forge \
+    numpy \
+    opencv \
+    pillow \
+    matplotlib \
+    scipy \
+    scikit-learn \
+    pyyaml \
+    tqdm \
+    jupyter \
+    ipython
+
+# Install PyTorch (CPU version for compatibility)
+print_status "Installing PyTorch..."
+conda install -y pytorch torchvision torchaudio cpuonly -c pytorch
+
+# Install additional pip dependencies
+print_status "Installing additional Python packages..."
 pip install --upgrade pip
+
+# Install LeRobot and its dependencies
 pip install -e .
-print_status "Installed LeRobot package and dependencies"
+
+# Install additional packages that might be needed
+pip install \
+    pyserial \
+    opencv-contrib-python \
+    realsense2-python \
+    huggingface-hub \
+    wandb \
+    gym \
+    stable-baselines3 \
+    imageio \
+    imageio-ffmpeg
+
+print_status "Python environment setup complete"
 
 print_step "3. Setting up calibration files..."
 
@@ -164,8 +247,21 @@ cat > start_bimanual_robot.sh << 'EOF'
 
 cd "$(dirname "$0")"
 
-# Activate virtual environment
-source venv/bin/activate
+# Initialize conda
+if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
+    source "$HOME/miniconda3/etc/profile.d/conda.sh"
+elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
+    source "$HOME/anaconda3/etc/profile.d/conda.sh"
+else
+    export PATH="$HOME/miniconda3/bin:$PATH"
+fi
+
+# Activate conda environment
+conda activate lerobot || {
+    echo "❌ Failed to activate lerobot conda environment"
+    echo "Run: conda activate lerobot"
+    exit 1
+}
 
 # Run camera diagnostic first
 echo "🔍 Running camera diagnostic..."
@@ -176,7 +272,15 @@ echo "🤖 Starting BiManual Robot Teleoperation..."
 echo "Press Ctrl+C to stop"
 echo ""
 
-# Default command - modify as needed
+# Check for connected devices
+echo "Checking for connected devices..."
+echo "Serial devices:"
+ls /dev/ttyACM* 2>/dev/null || echo "  No serial devices found!"
+echo "Video devices:"  
+ls /dev/video* 2>/dev/null || echo "  No video devices found!"
+echo ""
+
+# Default command - modify ports as needed based on your hardware
 python -m lerobot.teleoperate \
   --robot.type=bi_so101_follower \
   --robot.left_arm_port=/dev/ttyACM2 \
@@ -205,11 +309,30 @@ cat > calibrate_bimanual_robot.sh << 'EOF'
 
 cd "$(dirname "$0")"
 
-# Activate virtual environment
-source venv/bin/activate
+# Initialize conda
+if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
+    source "$HOME/miniconda3/etc/profile.d/conda.sh"
+elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
+    source "$HOME/anaconda3/etc/profile.d/conda.sh"
+else
+    export PATH="$HOME/miniconda3/bin:$PATH"
+fi
+
+# Activate conda environment
+conda activate lerobot || {
+    echo "❌ Failed to activate lerobot conda environment"
+    echo "Run: conda activate lerobot"
+    exit 1
+}
 
 echo "🔧 Starting BiManual Robot Calibration..."
 echo "Follow the on-screen instructions"
+echo ""
+
+# Check for connected devices first
+echo "Checking for connected devices..."
+echo "Serial devices:"
+ls /dev/ttyACM* 2>/dev/null || echo "  No serial devices found!"
 echo ""
 
 python -m lerobot.scripts.calibrate_bimanual_so101 \
@@ -222,20 +345,69 @@ EOF
 chmod +x calibrate_bimanual_robot.sh
 print_status "Created calibrate_bimanual_robot.sh"
 
-print_step "7. Deployment complete!"
+print_step "7. Running installation test..."
+
+# Run the test script to verify everything works
+if [[ -f "test_installation.sh" ]]; then
+    chmod +x test_installation.sh
+    ./test_installation.sh
+    
+    if [[ $? -eq 0 ]]; then
+        print_status "✅ All tests passed!"
+    else
+        print_warning "⚠️ Some tests failed - check output above"
+    fi
+else
+    print_warning "Test script not found, skipping verification"
+fi
+
+print_step "8. Creating environment activation helper..."
+
+# Create a helper script to activate the environment
+cat > activate_lerobot.sh << 'EOF'
+#!/bin/bash
+# Helper script to activate the lerobot conda environment
+# Usage: source activate_lerobot.sh
+
+if [[ -f "$HOME/miniconda3/etc/profile.d/conda.sh" ]]; then
+    source "$HOME/miniconda3/etc/profile.d/conda.sh"
+elif [[ -f "$HOME/anaconda3/etc/profile.d/conda.sh" ]]; then
+    source "$HOME/anaconda3/etc/profile.d/conda.sh"
+else
+    export PATH="$HOME/miniconda3/bin:$PATH"
+fi
+
+conda activate lerobot
+echo "✅ Activated lerobot conda environment"
+echo "Python: $(which python)"
+echo "LeRobot ready!"
+EOF
+
+chmod +x activate_lerobot.sh
+print_status "Created activate_lerobot.sh helper script"
+
+print_step "9. Deployment complete!"
 
 echo ""
 echo "✅ BiManual Robot deployment completed successfully!"
 echo ""
 echo "Next steps:"
-echo "1. ${YELLOW}Log out and back in${NC} (for group permissions)"
-echo "2. Connect your hardware:"
+echo "1. ${YELLOW}Restart your terminal or run: source ~/.bashrc${NC}"
+echo "2. ${YELLOW}If needed, logout and login${NC} (for group permissions)"
+echo "3. Connect your hardware:"
 echo "   - 4 servo motors to USB ports (will appear as /dev/ttyACM0-3)"
 echo "   - 2 cameras to USB ports"
-echo "3. Run: ${GREEN}./start_bimanual_robot.sh${NC} to start the system"
-echo "4. If needed, run: ${GREEN}./calibrate_bimanual_robot.sh${NC} to recalibrate"
+echo "4. Test installation: ${GREEN}./test_installation.sh${NC}"
+echo "5. Start the robot: ${GREEN}./start_bimanual_robot.sh${NC}"
+echo "6. If needed, recalibrate: ${GREEN}./calibrate_bimanual_robot.sh${NC}"
 echo ""
 echo "Troubleshooting:"
-echo "- Run: ${GREEN}python -m lerobot.scripts.camera_diagnostic${NC} to check cameras"
+echo "- Activate environment manually: ${GREEN}source activate_lerobot.sh${NC}"
+echo "- Check cameras: ${GREEN}python -m lerobot.scripts.camera_diagnostic${NC}"
 echo "- Check hardware connections if devices aren't detected"
+echo ""
+echo "Environment info:"
+echo "- Conda environment: ${GREEN}lerobot${NC}"
+echo "- Calibration files: ${GREEN}~/.cache/huggingface/lerobot/calibration/${NC}"
+echo "- Startup scripts: ${GREEN}./start_bimanual_robot.sh${NC}"
 echo ""

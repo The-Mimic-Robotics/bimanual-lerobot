@@ -7,20 +7,29 @@ This directory contains everything needed to deploy the bimanual SO101 robot sys
 1. **Clone the repository:**
    ```bash
    git clone <your-repo-url>
-   cd bimanual-lerobot
+   cd bimanual-lerobot/deployment
    ```
 
 2. **Run the automated setup:**
    ```bash
-   cd deployment
    ./setup_bimanual_robot.sh
    ```
+   
+3. **Restart terminal or reload bash:**
+   ```bash
+   source ~/.bashrc
+   ```
 
-3. **Connect hardware:**
+4. **Test the installation:**
+   ```bash
+   ./test_installation.sh
+   ```
+
+5. **Connect hardware:**
    - 4 servo motors → USB ports (will appear as `/dev/ttyACM0-3`)
    - 2 cameras → USB ports
 
-4. **Start the robot:**
+6. **Start the robot:**
    ```bash
    ./start_bimanual_robot.sh
    ```
@@ -33,9 +42,11 @@ This directory contains everything needed to deploy the bimanual SO101 robot sys
 - Automatically copied to `~/.cache/huggingface/lerobot/calibration/`
 
 ### Scripts
-- `setup_bimanual_robot.sh` - Complete system setup
+- `setup_bimanual_robot.sh` - Complete system setup with conda
 - `start_bimanual_robot.sh` - Start teleoperation (created during setup)
 - `calibrate_bimanual_robot.sh` - Recalibration if needed (created during setup)
+- `test_installation.sh` - Verify installation works (created during setup)
+- `activate_lerobot.sh` - Helper to activate conda environment (created during setup)
 
 ### Hardware Detection
 - Camera diagnostic tools
@@ -57,8 +68,23 @@ This directory contains everything needed to deploy the bimanual SO101 robot sys
 
 ## Troubleshooting
 
+### Test Installation
+```bash
+./test_installation.sh
+```
+
+### Activate Environment Manually
+```bash
+source activate_lerobot.sh
+# or
+conda activate lerobot
+```
+
 ### Check Hardware
 ```bash
+# Activate environment first
+conda activate lerobot
+
 # Camera diagnostic
 python -m lerobot.scripts.camera_diagnostic
 
