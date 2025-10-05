@@ -1,3 +1,44 @@
 Command to start and calibrate bimanual into ./calibrations directory
 
-python -m lerobot.teleoperate   --robot.type=bi_so101_follower   --robot.left_arm_port=COM6   --robot.right_arm_port=COM7   --robot.id=bimanual_so101   --robot.cameras="{ }"  --robot.calibration_dir="./calibrations"   --teleop.type=bi_so101_leader   --teleop.left_arm_port=COM4   --teleop.right_arm_port=COM8   --teleop.id=bimanual_so101_leader  --teleop.calibration_dir="./calibrations"   --display_data=true
+python -m lerobot.calibrate_bimanual_so101   --robot.type=bi_so101_follower   --robot.left_arm_port=/dev/ttyACM1   --robot.right_arm_port=/dev/ttyACM2   --robot.id=bimanual_so101   --robot.cameras="{}"  --robot.calibration_dir="./calibration"   --teleop.type=bi_so101_leader   --teleop.left_arm_port=/dev/ttyACM0   --teleop.right_arm_port=/dev/ttyACM3   --teleop.id=bimanual_so101_leader  --teleop.calibration_dir="./calibration"   --display_data=true
+
+
+python -m lerobot.teleoperate   --robot.type=bi_so101_follower   --robot.left_arm_port=/dev/ttyACM1   --robot.right_arm_port=/dev/ttyACM2   --robot.id=bimanual_so101 --robot.calibration_dir="./calibration"  --robot.cameras="{}"  --teleop.type=bi_so101_leader   --teleop.left_arm_port=/dev/ttyACM0   --teleop.right_arm_port=/dev/ttyACM3   --teleop.id=bimanual_so101_leader  --teleop.calibration_dir="./calibration"   --display_data=true
+
+
+#with camera
+python -m lerobot.teleoperate   --robot.type=bi_so101_follower   --robot.left_arm_port=/dev/ttyACM1   --robot.right_arm_port=/dev/ttyACM2   --robot.id=bimanual_so101 --robot.calibration_dir="./calibration"  --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30} }"  --robot.calibration_dir="./calibration"   --teleop.type=bi_so101_leader   --teleop.left_arm_port=/dev/ttyACM0   --teleop.right_arm_port=/dev/ttyACM3   --teleop.id=bimanual_so101_leader  --teleop.calibration_dir="./calibration"   --display_data=true
+
+
+
+#wriste camera port
+
+
+--- Detected Cameras ---
+Camera #0:
+  Name: OpenCV Camera @ /dev/video0
+  Type: OpenCV
+  Id: /dev/video0
+  Backend api: V4L2
+  Default stream profile:
+    Format: 0.0
+    Width: 640
+    Height: 480
+    Fps: 30.0
+--------------------
+Camera #1:
+  Name: OpenCV Camera @ /dev/video2
+  Type: OpenCV
+  Id: /dev/video2
+  Backend api: V4L2
+  Default stream profile:
+    Format: 0.0
+    Width: 640
+    Height: 480
+    Fps: 30.0
+--------------------
+
+
+
+
+#---
