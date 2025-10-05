@@ -21,6 +21,8 @@ This script helps you calibrate both follower and leader arms in the correct seq
 
 import argparse
 import logging
+from pathlib import Path
+
 
 from lerobot.robots.bi_so101_follower import BiSO101Follower, BiSO101FollowerConfig
 from lerobot.teleoperators.bi_so101_leader import BiSO101Leader, BiSO101LeaderConfig
@@ -36,6 +38,7 @@ def calibrate_bimanual_system(
     right_leader_port: str,
     robot_id: str = "bimanual_so101",
     use_degrees: bool = True,
+    calibration_dir: Path | None = None,
 ):
     """
     Calibrate the complete bimanual SO101 system.
@@ -60,6 +63,7 @@ def calibrate_bimanual_system(
         left_arm_use_degrees=use_degrees,
         right_arm_use_degrees=use_degrees,
         cameras={},  # No cameras needed for calibration
+        calibration_dir=calibration_dir,
     )
     
     teleop_config = BiSO101LeaderConfig(
@@ -67,6 +71,7 @@ def calibrate_bimanual_system(
         left_arm_port=left_leader_port,
         right_arm_port=right_leader_port,
         use_degrees=use_degrees,
+        calibration_dir=calibration_dir,
     )
     
     # Initialize systems
@@ -181,6 +186,13 @@ def main():
         default=True,
         help="Use degrees for calibration (default: True)"
     )
+    parser.add_argument(
+    "--calibration_dir",
+    type=Path,
+    default=None,
+    help="Custom directory to save calibration files"
+)
+
     
     args = parser.parse_args()
     
@@ -191,6 +203,7 @@ def main():
         right_leader_port=args.right_leader_port,
         robot_id=args.robot_id,
         use_degrees=args.use_degrees,
+        calibration_dir=args.calibration_dir,
     )
 
 

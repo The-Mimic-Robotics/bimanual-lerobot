@@ -1,0 +1,3 @@
+Command to start and calibrate bimanual into ./calibrations directory
+
+python -m lerobot.teleoperate   --robot.type=bi_so101_follower   --robot.left_arm_port=COM6   --robot.right_arm_port=COM7   --robot.id=bimanual_so101   --robot.cameras="{ }"  --robot.calibration_dir="./calibrations"   --teleop.type=bi_so101_leader   --teleop.left_arm_port=COM4   --teleop.right_arm_port=COM8   --teleop.id=bimanual_so101_leader  --teleop.calibration_dir="./calibrations"   --display_data=true
