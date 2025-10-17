@@ -167,13 +167,16 @@ pip install -e .
 pip install \
     pyserial \
     opencv-contrib-python \
+    pyrealsense2 \
     realsense2-python \
     huggingface-hub \
     wandb \
     gym \
     stable-baselines3 \
     imageio \
-    imageio-ffmpeg
+    imageio-ffmpeg \
+    draccus \
+    omegaconf
 
 print_status "Python environment setup complete"
 
@@ -281,19 +284,19 @@ ls /dev/video* 2>/dev/null || echo "  No video devices found!"
 echo ""
 
 # Default command - modify ports as needed based on your hardware
+# Use working camera indices (2 and 6 are on different USB controllers)
 python -m lerobot.teleoperate \
   --robot.type=bi_so101_follower \
-  --robot.left_arm_port=/dev/ttyACM2 \
-  --robot.right_arm_port=/dev/ttyACM3 \
-  --robot.id=bimanual_so101_setup \
-  --robot.cameras='{
-    left_wrist: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30},
-    right_wrist: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30},
-  }' \
+  --robot.left_arm_port=/dev/ttyACM1 \
+  --robot.right_arm_port=/dev/ttyACM2 \
+  --robot.id=bimanual_so101 \
+  --robot.calibration_dir="./calibration" \
+  --robot.cameras="{wrist_right: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 6, width: 640, height: 480, fps: 30}}" \
   --teleop.type=bi_so101_leader \
   --teleop.left_arm_port=/dev/ttyACM0 \
-  --teleop.right_arm_port=/dev/ttyACM1 \
-  --teleop.id=bimanual_leader_setup \
+  --teleop.right_arm_port=/dev/ttyACM3 \
+  --teleop.id=bimanual_so101_leader \
+  --teleop.calibration_dir="./calibration" \
   --display_data=true
 EOF
 

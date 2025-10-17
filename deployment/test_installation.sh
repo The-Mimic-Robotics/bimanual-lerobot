@@ -120,6 +120,38 @@ else
     echo "Then logout and login again"
 fi
 
+# Test 8: USB Topology Analysis
+print_test "Analyzing USB topology for camera separation..."
+echo "USB Controllers:"
+lspci | grep USB | while read line; do
+    echo "  $line"
+done
+
+echo ""
+echo "Camera USB Controller Analysis:"
+for cam in /dev/video*; do
+    if [[ -e "$cam" ]]; then
+        controller_info=$(udevadm info --query=all --name=$cam | grep "ID_PATH=" | head -1)
+        pci_device=$(echo "$controller_info" | grep -o 'pci-[^-]*')
+        echo "  $cam -> $pci_device"
+    fi
+done
+
+echo ""
+# Check if cameras are on same controller
+cam_controllers=($(for cam in /dev/video*; do 
+    if [[ -e "$cam" ]]; then
+        udevadm info --query=all --name=$cam | grep "ID_PATH=" | head -1 | grep -o 'pci-[^-]*'
+    fi
+done | sort -u))
+
+if [[ ${#cam_controllers[@]} -gt 1 ]]; then
+    print_pass "Cameras are on separate USB controllers"
+else
+    print_fail "All cameras are on the same USB controller: ${cam_controllers[0]}"
+    echo "Move cameras to different physical USB ports on motherboard"
+fi
+
 echo ""
 echo "🎯 Installation test completed!"
 echo "If all tests pass, run: ./start_bimanual_robot.sh"
