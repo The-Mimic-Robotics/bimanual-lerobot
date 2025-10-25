@@ -3,7 +3,7 @@ This guide explains how to correctly set up and run the data collection script f
 Please follow each step in order — this ensures the cameras and motors connect properly and proper ID's are assigned to them.
 
 
-## Hardware Setup
+# Hardware Setup
 
 Before running any commands, you need to make sure that all USB's are connected in the following order:
 
@@ -20,7 +20,7 @@ Before running any commands, you need to make sure that all USB's are connected 
 
 
 
-## Calibration Command
+# Calibration Command
 If you want to recalibrate the arms you can use the following command in the terminal: 
 
 ```bash
@@ -36,7 +36,7 @@ python -m lerobot.scripts.calibrate_bimanual_so101 \
 
 After the calibration, calibration files will be saved in '/src/calibration' directory
 
-## How to run teleoperation script
+# How to run teleoperation script
 Use this command if you want to run teleoperation (not data recording*) with OpenCV cameras and RealSense camera support:
 
 ```bash
@@ -57,7 +57,7 @@ python -m lerobot.teleoperate \
 
 
 
-## How to run data collection script
+# How to run data collection script
 
 Before collecting data we need to set the huggingface user: 
 
