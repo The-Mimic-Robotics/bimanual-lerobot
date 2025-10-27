@@ -34,10 +34,7 @@ def get_safe_default_codec():
     if importlib.util.find_spec("torchcodec"):
         return "torchcodec"
     else:
-        logging.warning(
-            "'torchcodec' is not available in your platform, falling back to 'pyav' as a default decoder"
-        )
-        return "pyav"
+        raise ImportError("TorchCodec is not available in your environment. Please install torchcodec and ensure all dependencies are compatible.")
 
 
 def decode_video_frames(

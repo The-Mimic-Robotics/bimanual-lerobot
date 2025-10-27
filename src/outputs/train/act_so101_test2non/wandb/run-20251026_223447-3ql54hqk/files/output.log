@@ -1,0 +1,79 @@
+[1m[34mLogs will be synced with wandb.[0m
+INFO 2025-10-26 22:34:47 db_utils.py:103 Track this run --> [1m[33mhttps://wandb.ai/rna-folding-ea-ml/lerobot/runs/3ql54hqk[0m
+INFO 2025-10-26 22:34:47 ts/train.py:127 Creating dataset
+Resolving data files: 100%|█████| 34/34 [00:00<00:00, 196157.27it/s]
+INFO 2025-10-26 22:34:48 ts/train.py:138 Creating policy
+INFO 2025-10-26 22:34:48 ts/train.py:144 Creating optimizer and scheduler
+INFO 2025-10-26 22:34:48 ts/train.py:156 [1m[33mOutput dir:[0m outputs/train/act_so101_test2non
+INFO 2025-10-26 22:34:48 ts/train.py:159 cfg.steps=100000 (100K)
+INFO 2025-10-26 22:34:48 ts/train.py:160 dataset.num_frames=26961 (27K)
+INFO 2025-10-26 22:34:48 ts/train.py:161 dataset.num_episodes=34
+INFO 2025-10-26 22:34:48 ts/train.py:162 num_learnable_params=51609484 (52M)
+INFO 2025-10-26 22:34:48 ts/train.py:163 num_total_params=51609574 (52M)
+INFO 2025-10-26 22:34:48 ts/train.py:202 Start offline training on a fixed dataset
+Traceback (most recent call last):
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1275, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/_utils/signal_handling.py", line 73, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 418078) is killed by signal: Aborted.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/odin/miniconda3/envs/lerobot/bin/lerobot-train", line 7, in <module>
+    sys.exit(main())
+  File "/home/odin/bimanual-lerobot/src/lerobot/scripts/train.py", line 291, in main
+    train()
+  File "/home/odin/bimanual-lerobot/src/lerobot/configs/parser.py", line 225, in wrapper_inner
+    response = fn(cfg, *args, **kwargs)
+  File "/home/odin/bimanual-lerobot/src/lerobot/scripts/train.py", line 205, in train
+    batch = next(dl_iter)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 631, in cycle
+    yield next(iterator)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 732, in __next__
+    data = self._next_data()
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1482, in _next_data
+    idx, data = self._get_data()
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1434, in _get_data
+    success, data = self._try_get_data()
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1288, in _try_get_data
+    raise RuntimeError(
+RuntimeError: DataLoader worker (pid(s) 418078) exited unexpectedly
+Traceback (most recent call last):
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1275, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/queue.py", line 180, in get
+    self.not_empty.wait(remaining)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/threading.py", line 324, in wait
+    gotit = waiter.acquire(True, timeout)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/_utils/signal_handling.py", line 73, in handler
+    _error_if_any_worker_fails()
+RuntimeError: DataLoader worker (pid 418078) is killed by signal: Aborted.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/odin/miniconda3/envs/lerobot/bin/lerobot-train", line 7, in <module>
+    sys.exit(main())
+  File "/home/odin/bimanual-lerobot/src/lerobot/scripts/train.py", line 291, in main
+    train()
+  File "/home/odin/bimanual-lerobot/src/lerobot/configs/parser.py", line 225, in wrapper_inner
+    response = fn(cfg, *args, **kwargs)
+  File "/home/odin/bimanual-lerobot/src/lerobot/scripts/train.py", line 205, in train
+    batch = next(dl_iter)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 631, in cycle
+    yield next(iterator)
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 732, in __next__
+    data = self._next_data()
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1482, in _next_data
+    idx, data = self._get_data()
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1434, in _get_data
+    success, data = self._try_get_data()
+  File "/home/odin/miniconda3/envs/lerobot/lib/python3.10/site-packages/torch/utils/data/dataloader.py", line 1288, in _try_get_data
+    raise RuntimeError(
+RuntimeError: DataLoader worker (pid(s) 418078) exited unexpectedly
