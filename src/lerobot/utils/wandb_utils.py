@@ -137,7 +137,26 @@ class WandBLogger:
                 self._wandb.define_metric(new_custom_key, hidden=True)
 
         for k, v in d.items():
-            if not isinstance(v, (int, float, str)):
+            # Handle PyTorch tensors by converting to Python scalars
+            if hasattr(v, 'item') and callable(getattr(v, 'item')):  # Check if it's a tensor-like object
+                try:
+                    v = v.item()  # Convert single-element tensor to Python scalar
+                except (ValueError, RuntimeError):
+                    # Handle multi-element tensors by taking their mean
+                    if hasattr(v, 'mean') and callable(getattr(v, 'mean')):
+                        try:
+                            v = v.mean().item()  # Take mean of multi-element tensor
+                        except Exception:
+                            logging.warning(
+                                f'WandB logging of key "{k}" was ignored as tensor could not be converted to scalar.'
+                            )
+                            continue
+                    else:
+                        logging.warning(
+                            f'WandB logging of key "{k}" was ignored as tensor could not be converted to scalar.'
+                        )
+                        continue
+            elif not isinstance(v, (int, float, str)):
                 logging.warning(
                     f'WandB logging of key "{k}" was ignored as its type "{type(v)}" is not handled by this wrapper.'
                 )

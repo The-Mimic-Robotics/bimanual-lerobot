@@ -91,3 +91,73 @@ python -m lerobot.record \
   --dataset.fps=30
 ```
 
+---
+
+# 🚀 Training Robot Policies
+
+After collecting your bimanual manipulation dataset, you can train various policy types to control your robot autonomously. This section covers training setup, optimization, and best practices.
+
+### Optimized Training Command
+
+```bash
+lerobot-train \
+  --dataset.repo_id="Batonchegg/bimanual_training_recording1" \
+  --policy.type=smolvla \
+  --output_dir=outputs/train/smolVLA_Mimic_Test1 \
+  --job_name=smolvla_bimanual_training \
+  --policy.device=cuda \
+  --wandb.enable=true \
+  --policy.repo_id="Batonchegg/smolVLA" \
+  --batch_size=6 \
+```
+
+### 🔧 Parameter Explanations
+
+#### Core Parameters
+- **`--dataset.repo_id`**: Your Hugging Face dataset repository
+  - Format: `{username}/{dataset_name}`
+  - Example: `"Batonchegg/bimanual_training_recording1"`
+  
+- **`--policy.type`**: Policy architecture to use
+  - `smolvla`: Vision-Language-Action model (450M parameters)
+  - Alternatives: `act`, `diffusion`, `tdmpc`, `vqbet`
+  
+- **`--output_dir`**: Where to save checkpoints and logs
+  - Default: `outputs/train/{job_name}`
+  - Contains: model checkpoints, training logs, configuration files
+
+- **`--job_name`**: Identifier for this training run
+  - Used in WandB dashboard and file naming
+  - Keep it descriptive: `smolvla_bimanual_training`
+
+#### GPU Optimization Parameters
+
+- **`--batch_size=6`**: Number of samples processed simultaneously
+  - **Why 6?** Optimized for RTX 3080 (10GB VRAM)
+  - Calculation: `~1,222 MiB per sample × 6 = ~7,332 MiB (75% GPU utilization)`
+  - **Benefits**: 3x faster training than batch_size=2
+  
+  **Batch Size Guidelines:**
+  ```
+  10GB (RTX 3080) - Recommended Batch Size 6-7
+  ```
+
+
+- **`--policy.use_amp=true`**: Enable Automatic Mixed Precision
+  - **What it does**: Uses float16 for most operations, float32 for precision-critical parts
+  - **Memory savings**: ~50% reduction in GPU memory usage
+  - **Speed boost**: ~2x faster computation on modern GPUs
+  - **Accuracy**: No loss in final model performance
+  
+  **Technical Details:**
+  ```python
+  # Without AMP (float32):
+  450M parameters × 4 bytes = 1,800 MB
+  
+  # With AMP (float16):
+  450M parameters × 2 bytes = 900 MB
+  + gradients + optimizer states
+  ≈ 4-5 GB total
+  ```
+
+
