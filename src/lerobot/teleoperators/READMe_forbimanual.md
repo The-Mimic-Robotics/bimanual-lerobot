@@ -113,3 +113,25 @@ python -m lerobot.teleoperate --robot.type=bi_so101_follower --robot.left_arm_po
 /dev/video0
 
 python -m lerobot.teleoperate --robot.type=bi_so101_follower --robot.left_arm_port=/dev/ttyACM1 --robot.right_arm_port=/dev/ttyACM2 --robot.id=bimanual_so101 --robot.calibration_dir=./calibration --robot.cameras='{"wrist_right": {"type": "opencv", "index_or_path": /dev/video2, "width": 640, "height": 480, "fps": 30}, "wrist_left": {"type": "opencv", "index_or_path": /dev/video0, "width": 640, "height": 480, "fps": 30}}' --teleop.type=bi_so101_leader --teleop.left_arm_port=/dev/ttyACM0 --teleop.right_arm_port=/dev/ttyACM3 --teleop.id=bimanual_so101_leader --teleop.calibration_dir=./calibration --display_data=true
+
+
+python -m lerobot.record   --robot.type=bi_so101_follower   --robot.left_arm_port=/dev/ttyACM1   --robot.right_arm_port=/dev/ttyACM2   --robot.id=bimanual_so101   --robot.calibration_dir="./calibration"   --teleop.type=bi_so101_leader   --teleop.left_arm_port=/dev/ttyACM0   --teleop.right_arm_port=/dev/ttyACM3   --teleop.id=bimanual_so101_leader   --teleop.calibration_dir="./calibration"   --display_data=true   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}"   --dataset.root="./recordings"   --dataset.repo_id="${HF_USER}/bimanual_test_recording"   --dataset.push_to_hub=false   --dataset.single_task="Test bimanual robot recording"   --dataset.num_episodes=1   --dataset.episode_time_s=30   --dataset.fps=30
+
+
+#tele without cam 
+python -m lerobot.teleoperate --robot.type=bi_so101_follower --robot.left_arm_port=/dev/ttyACM1 --robot.right_arm_port=/dev/ttyACM2 --robot.id=bimanual_so101 --robot.calibration_dir=./calibration --robot.cameras="{}" --teleop.type=bi_so101_leader --teleop.left_arm_port=/dev/ttyACM0 --teleop.right_arm_port=/dev/ttyACM3 --teleop.id=bimanual_so101_leader --teleop.calibration_dir=./calibration --display_data=false
+
+
+python -m lerobot.teleoperate \
+  --robot.type=bi_so101_follower \
+  --robot.left_arm_port=/dev/ttyACM1 \
+  --robot.right_arm_port=/dev/ttyACM2 \
+  --robot.id=bimanual_so101 \
+  --robot.calibration_dir="./calibration" \
+  --teleop.type=bi_so101_leader \
+  --teleop.left_arm_port=/dev/ttyACM0 \
+  --teleop.right_arm_port=/dev/ttyACM3 \
+  --teleop.id=bimanual_so101_leader \
+  --teleop.calibration_dir="./calibration" \
+  --display_data=true \
+  --robot.cameras='{"wrist_right": {"type": "opencv", "index_or_path": 0, "width": 640, "height": 480, "fps": 30}, "wrist_left": {"type": "opencv", "index_or_path": 2, "width": 640, "height": 480, "fps": 30}, "realsense_top": {"type": "intelrealsense", "serial_number_or_name": "027322073278", "width": 640, "height": 480, "fps": 30}}'

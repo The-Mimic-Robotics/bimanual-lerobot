@@ -28,6 +28,9 @@ from typing import Any
 # Fix MSMF hardware transform compatibility for Windows before importing cv2
 if platform.system() == "Windows" and "OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS" not in os.environ:
     os.environ["OPENCV_VIDEOIO_MSMF_ENABLE_HW_TRANSFORMS"] = "0"
+# Disable GStreamer to avoid pipeline issues on Linux
+if "OPENCV_VIDEOIO_PRIORITY_GSTREAMER" not in os.environ:
+    os.environ["OPENCV_VIDEOIO_PRIORITY_GSTREAMER"] = "0"
 import cv2
 import numpy as np
 
@@ -420,7 +423,7 @@ class OpenCVCamera(Camera):
         self.thread = None
         self.stop_event = None
 
-    def async_read(self, timeout_ms: float = 1000) -> np.ndarray:
+    def async_read(self, timeout_ms: float = 200) -> np.ndarray:
         """
         Reads the latest available frame asynchronously.
 
@@ -430,7 +433,7 @@ class OpenCVCamera(Camera):
 
         Args:
             timeout_ms (float): Maximum time in milliseconds to wait for a frame
-                to become available. Defaults to 1000ms (1.0 seconds).
+                to become available. Defaults to 200ms (0.2 seconds).
 
         Returns:
             np.ndarray: The latest captured frame as a NumPy array in the format
