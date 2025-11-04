@@ -43,11 +43,12 @@ class Teleoperator(abc.ABC):
 
     def __init__(self, config: TeleoperatorConfig):
         self.id = config.id
-        self.calibration_dir = (
-            config.calibration_dir
-            if config.calibration_dir
-            else HF_LEROBOT_CALIBRATION / TELEOPERATORS / self.name
-        )
+        # self.calibration_dir = (
+        #     config.calibration_dir
+        #     if config.calibration_dir
+        #     else HF_LEROBOT_CALIBRATION / TELEOPERATORS / self.name
+        # )
+        self.calibration_dir = Path("/home/odin/bimanual-lerobot/src/calibration")
         self.calibration_dir.mkdir(parents=True, exist_ok=True)
         self.calibration_fpath = self.calibration_dir / f"{self.id}.json"
         self.calibration: dict[str, MotorCalibration] = {}
