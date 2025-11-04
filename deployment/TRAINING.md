@@ -40,17 +40,25 @@ After the calibration, calibration files will be saved in '/src/calibration' dir
 Use this command if you want to run teleoperation (not data recording*) with OpenCV cameras and RealSense camera support:
 
 ```bash
+Before running mkae sure to be in the src folder
+```
+
+
+```bash 
+ls /dev/ttyACM* 
+```
+
+
+```bash
 python -m lerobot.teleoperate \
   --robot.type=bi_so101_follower \
   --robot.left_arm_port=/dev/ttyACM1 \
   --robot.right_arm_port=/dev/ttyACM2 \
   --robot.id=bimanual_so101 \
-  --robot.calibration_dir="./calibration" \
   --teleop.type=bi_so101_leader \
   --teleop.left_arm_port=/dev/ttyACM0 \
   --teleop.right_arm_port=/dev/ttyACM3 \
   --teleop.id=bimanual_so101_leader \
-  --teleop.calibration_dir="./calibration" \
   --display_data=true \
   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}"
 ```
@@ -76,12 +84,10 @@ python -m lerobot.record \
   --robot.left_arm_port=/dev/ttyACM1 \
   --robot.right_arm_port=/dev/ttyACM2 \
   --robot.id=bimanual_so101 \
-  --robot.calibration_dir="./calibration" \
   --teleop.type=bi_so101_leader \
   --teleop.left_arm_port=/dev/ttyACM0 \
   --teleop.right_arm_port=/dev/ttyACM3 \
   --teleop.id=bimanual_so101_leader \
-  --teleop.calibration_dir="./calibration" \
   --display_data=true \
   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}" \
   --dataset.repo_id="${HF_USER}/bimanual_test_recording" \
@@ -91,7 +97,10 @@ python -m lerobot.record \
   --dataset.fps=30
 ```
 
----
+-------
+***    replay~~~    ***
+
+
 
 # 🚀 Training Robot Policies
 
@@ -161,3 +170,39 @@ lerobot-train \
   ```
 
 
+
+
+
+
+
+
+Evaluating ACT
+
+Once training is complete, you can evaluate your ACT policy using the lerobot-record command with your trained policy. This will run inference and record evaluation episodes:
+  ```bash
+  lerobot-record \
+    --robot.type=so100_follower \
+    --robot.port=/dev/ttyACM0 \
+    --robot.id=my_robot \
+    --robot.cameras="{ front: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}}" \
+    --display_data=true \
+    --dataset.repo_id=${HF_USER}/eval_act_your_dataset \
+    --dataset.num_episodes=10 \
+    --dataset.single_task="Your task description" \
+    --policy.path=${HF_USER}/act_policy
+  ```
+
+
+
+
+
+lerobot-record \
+    --robot.type=bi_so101_follower \
+    --robot.left_arm_port=/dev/ttyACM1 \
+    --robot.right_arm_port=/dev/ttyACM2\ --robot.id=bimanual_so101 \
+    --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}" \
+    --display_data=true \
+    --dataset.repo_id="Batonchegg/eval_act_your_dataset" \
+    --dataset.num_episodes=10 \
+    --dataset.single_task="Pick and placke two objects" \
+    --policy.path="Batonchegg/my_policy"
