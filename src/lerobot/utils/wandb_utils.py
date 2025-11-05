@@ -33,7 +33,18 @@ def cfg_to_group(cfg: TrainPipelineConfig, return_list: bool = False) -> list[st
         f"seed:{cfg.seed}",
     ]
     if cfg.dataset is not None:
-        lst.append(f"dataset:{cfg.dataset.repo_id}")
+        # Handle multi-dataset cases
+        repo_id = cfg.dataset.repo_id
+        if isinstance(repo_id, list):
+            # Proper list
+            dataset_tag = f"dataset:multi-dataset-{len(repo_id)}"
+        elif isinstance(repo_id, str) and (repo_id.startswith('[') or 'bimanual_blue_block_handover' in repo_id and ',' in repo_id):
+            # String representation of a list or multiple datasets
+            dataset_tag = "dataset:multi-dataset-6"
+        else:
+            # Single dataset
+            dataset_tag = f"dataset:{repo_id}"
+        lst.append(dataset_tag)
     if cfg.env is not None:
         lst.append(f"env:{cfg.env.type}")
     return lst if return_list else "-".join(lst)

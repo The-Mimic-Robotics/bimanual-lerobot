@@ -107,6 +107,14 @@ def update_policy(
 
 @parser.wrap()
 def train(cfg: TrainPipelineConfig):
+    # Fix repo_id if it's a string representation of a list
+    if isinstance(cfg.dataset.repo_id, str) and cfg.dataset.repo_id.startswith('['):
+        import ast
+        try:
+            cfg.dataset.repo_id = ast.literal_eval(cfg.dataset.repo_id)
+        except (ValueError, SyntaxError):
+            pass
+    
     cfg.validate()
     logging.info(pformat(cfg.to_dict()))
 

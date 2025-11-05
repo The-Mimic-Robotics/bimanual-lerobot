@@ -97,11 +97,17 @@ def make_dataset(cfg: TrainPipelineConfig) -> LeRobotDataset | MultiLeRobotDatas
             video_backend=cfg.dataset.video_backend,
         )
     else:
-        raise NotImplementedError("The MultiLeRobotDataset isn't supported for now.")
+        # raise NotImplementedError("The MultiLeRobotDataset isn't supported for now.")
+        # For multi-dataset, we need to compute delta_timestamps for the first dataset's metadata
+        # and use it for all datasets (assuming they have the same structure)
+        ds_meta = LeRobotDatasetMetadata(
+            cfg.dataset.repo_id[0], root=cfg.dataset.root, revision=cfg.dataset.revision
+        )
+        delta_timestamps = resolve_delta_timestamps(cfg.policy, ds_meta)
+        
         dataset = MultiLeRobotDataset(
             cfg.dataset.repo_id,
-            # TODO(aliberts): add proper support for multi dataset
-            # delta_timestamps=delta_timestamps,
+            delta_timestamps=delta_timestamps,
             image_transforms=image_transforms,
             video_backend=cfg.dataset.video_backend,
         )

@@ -352,7 +352,7 @@ class RealSenseCamera(Camera):
 
         return depth_map_processed
 
-    def read(self, color_mode: ColorMode | None = None, timeout_ms: int = 200) -> np.ndarray:
+    def read(self, color_mode: ColorMode | None = None, timeout_ms: int = 1000) -> np.ndarray:
         """
         Reads a single frame (color) synchronously from the camera.
 
@@ -360,7 +360,7 @@ class RealSenseCamera(Camera):
         from the camera hardware via the RealSense pipeline.
 
         Args:
-            timeout_ms (int): Maximum time in milliseconds to wait for a frame. Defaults to 200ms.
+            timeout_ms (int): Maximum time in milliseconds to wait for a frame. Defaults to 1000ms.
 
         Returns:
             np.ndarray: The captured color frame as a NumPy array
