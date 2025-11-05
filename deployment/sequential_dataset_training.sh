@@ -134,8 +134,9 @@ for i in "${!DATASETS[@]}"; do
     DATASET_NUM=$((i + 1))
     DATASET_ID="${DATASETS[$i]}"
     DATASET_NAME=$(basename "$DATASET_ID")
+    TOTAL_DATASETS=${#DATASETS[@]}
     
-    print_header "Training on Dataset $DATASET_NUM/$${#DATASETS[@]}: $DATASET_NAME"
+    print_header "Training on Dataset $DATASET_NUM/$TOTAL_DATASETS: $DATASET_NAME"
     
     # Create output directory for this stage
     OUTPUT_DIR="${BASE_OUTPUT_DIR}/stage_${DATASET_NUM}_${DATASET_NAME}"
@@ -170,8 +171,11 @@ for i in "${!DATASETS[@]}"; do
     # Add Hub configuration for final stage only
     if [ $DATASET_NUM -eq ${#DATASETS[@]} ]; then
         print_info "This is the final stage - will push to Hub"
-        TRAIN_CMD="$TRAIN_CMD --policy.push_to_hub=true"
         TRAIN_CMD="$TRAIN_CMD --policy.repo_id=$HUB_REPO_ID"
+        TRAIN_CMD="$TRAIN_CMD --policy.push_to_hub=true"
+    else
+        # For non-final stages, disable push to hub
+        TRAIN_CMD="$TRAIN_CMD --policy.push_to_hub=false"
     fi
     
     print_info "Running command:"
