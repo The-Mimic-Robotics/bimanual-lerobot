@@ -190,7 +190,7 @@ lerobot-train \
 
 
 
-Evaluating ACT
+# Evaluating ACT
 
 Once training is complete, you can evaluate your ACT policy using the lerobot-record command with your trained policy. This will run inference and record evaluation episodes:
   ```bash
@@ -220,3 +220,74 @@ lerobot-record \
     --dataset.num_episodes=10 \
     --dataset.single_task="Pick and placke two objects" \
     --policy.path="Batonchegg/my_policy"
+
+# 🚀 Running Training in the Background (Safe from SSH Disconnects)
+
+If you are running training over SSH or want your training to continue even if you close your terminal, use `nohup` and bash variables for easy, robust runs.
+
+## Using Bash Variables for Flexible Training
+
+Set your policy type and computer name as variables at the top of your terminal session:
+
+```bash
+POLICY_TYPE=smolvla   # or act, diffusion, etc.
+COMPUTER=odin         # set to your machine name (e.g., odin, orenda)
+```
+
+## Start Training with nohup (Recommended)
+
+This command will:
+- Run in the background (safe from SSH disconnects)
+- Save all logs to a file in your output directory
+- Use your variables for easy naming and reproducibility
+
+```bash
+nohup lerobot-train \
+  --dataset.repo_id='["Batonchegg/bimanual_blue_block_handover_1", "Batonchegg/bimanual_blue_block_handover_2", "Batonchegg/bimanual_blue_block_handover_3", "Batonchegg/bimanual_blue_block_handover_4", "Batonchegg/bimanual_blue_block_handover_5", "Batonchegg/bimanual_blue_block_handover_6"]' \
+  --policy.type=$POLICY_TYPE \
+  --output_dir=outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining \
+  --job_name=${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining \
+  --policy.device=cuda \
+  --wandb.enable=true \
+  --wandb.notes="Multi-dataset training on 6 bimanual handover datasets - $POLICY_TYPE on $COMPUTER" \
+  --policy.repo_id="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
+  --batch_size=32 \
+  --num_workers=16 \
+  --policy.use_amp=true > outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining/training.log 2>&1 &
+```
+
+- Change `POLICY_TYPE` and `COMPUTER` as needed for each run.
+- All logs will be in the output folder for that run.
+- You can safely disconnect SSH and training will continue.
+
+## What does `> ... 2>&1 &` mean?
+
+- `>` redirects the standard output (what you normally see in the terminal) to a file (e.g., `training.log`).
+- `2>&1` redirects the standard error (errors and warnings) to the same place as standard output, so both go into the log file.
+- `&` at the end runs the command in the background, so you get your terminal prompt back and the process keeps running.
+
+**Example:**
+```bash
+nohup lerobot-train ... > outputs/train/myrun/training.log 2>&1 &
+```
+- All output (including errors) will be saved in `training.log`.
+- The process will keep running even if you close your terminal or disconnect SSH.
+
+## Monitoring and Stopping Training
+
+- **Check if running:**
+  ```bash
+  ps aux | grep lerobot-train
+  ```
+- **View logs:**
+  ```bash
+  tail -f outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining/training.log
+  ```
+- **Stop training:**
+  ```bash
+  pkill -f lerobot-train
+  ```
+
+---
+
+You can use this method for any policy type or machine, and it is safe and simple for all users!
