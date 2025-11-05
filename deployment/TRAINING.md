@@ -48,16 +48,19 @@ Before running mkae sure to be in the src folder
 ls /dev/ttyACM* 
 ```
 
+--robot.calibration_dir="/home/odin/bimanual-lerobot/src/calibration"
 
 ```bash
 python -m lerobot.teleoperate \
   --robot.type=bi_so101_follower \
   --robot.left_arm_port=/dev/ttyACM1 \
   --robot.right_arm_port=/dev/ttyACM2 \
+  --robot.calibration_dir="/home/odin/bimanual-lerobot/src/calibration" \
   --robot.id=bimanual_so101 \
   --teleop.type=bi_so101_leader \
   --teleop.left_arm_port=/dev/ttyACM0 \
   --teleop.right_arm_port=/dev/ttyACM3 \
+  --robot.calibration_dir="/home/odin/bimanual-lerobot/src/calibration" \
   --teleop.id=bimanual_so101_leader \
   --display_data=true \
   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}"
@@ -83,25 +86,36 @@ python -m lerobot.record \
   --robot.type=bi_so101_follower \
   --robot.left_arm_port=/dev/ttyACM1 \
   --robot.right_arm_port=/dev/ttyACM2 \
+  --robot.calibration_dir="/home/odin/bimanual-lerobot/src/calibration" \
   --robot.id=bimanual_so101 \
   --teleop.type=bi_so101_leader \
   --teleop.left_arm_port=/dev/ttyACM0 \
   --teleop.right_arm_port=/dev/ttyACM3 \
+  --robot.calibration_dir="/home/odin/bimanual-lerobot/src/calibration" \
   --teleop.id=bimanual_so101_leader \
   --display_data=true \
   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}" \
-  --dataset.repo_id="${HF_USER}/bimanual_test_recording" \
-  --dataset.single_task="Test bimanual robot recording" \
-  --dataset.num_episodes=1 \
-  --dataset.episode_time_s=30 \
+  --dataset.repo_id="Batonchegg/bimanual_blue_block_handover_6" \
+  --dataset.single_task="blue_block_handover" \
+  --dataset.num_episodes=25 \
+  --dataset.episode_time_s=45 \
+  --dataset.reset_time_s=5 \
   --dataset.fps=30
 ```
 
 -------
 ***    replay~~~    ***
-
-
-
+```bash
+python -m lerobot.replay \
+  --robot.type=bi_so101_follower \
+  --robot.left_arm_port=/dev/ttyACM1 \
+  --robot.right_arm_port=/dev/ttyACM2 \
+  --robot.calibration_dir="/home/odin/bimanual-lerobot/src/calibration" \
+  --robot.id=bimanual_so101 \
+  --robot.cameras='{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: "027322073278", width: 640, height: 480, fps: 30}}' \
+  --dataset.repo_id="Batonchegg/bimanual_blue_block_handover_4" \
+  --dataset.episode=8
+```
 # 🚀 Training Robot Policies
 
 After collecting your bimanual manipulation dataset, you can train various policy types to control your robot autonomously. This section covers training setup, optimization, and best practices.
