@@ -1,0 +1,14 @@
+# ignore python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# optionally ignore python envs
+.venv/
+env/
+venv/
+
+# ignore output folders
+
+

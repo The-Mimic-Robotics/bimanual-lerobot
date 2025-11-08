@@ -186,44 +186,16 @@ lerobot-train \
 
 
 
-
-
-
-
-# Evaluating ACT
-
-Once training is complete, you can evaluate your ACT policy using the lerobot-record command with your trained policy. This will run inference and record evaluation episodes:
-  ```bash
-  lerobot-record \
-    --robot.type=so100_follower \
-    --robot.port=/dev/ttyACM0 \
-    --robot.id=my_robot \
-    --robot.cameras="{ front: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}}" \
-    --display_data=true \
-    --dataset.repo_id=${HF_USER}/eval_act_your_dataset \
-    --dataset.num_episodes=10 \
-    --dataset.single_task="Your task description" \
-    --policy.path=${HF_USER}/act_policy
-  ```
-
-
-
-
-
-lerobot-record \
-    --robot.type=bi_so101_follower \
-    --robot.left_arm_port=/dev/ttyACM1 \
-    --robot.right_arm_port=/dev/ttyACM2\ --robot.id=bimanual_so101 \
-    --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}" \
-    --display_data=true \
-    --dataset.repo_id="Batonchegg/eval_act_your_dataset" \
-    --dataset.num_episodes=10 \
-    --dataset.single_task="Pick and placke two objects" \
-    --policy.path="Batonchegg/my_policy"
-
-# 🚀 Running Training in the Background (Safe from SSH Disconnects)
+# (Recommended  Approach) Running Training in the Background (Safe from SSH Disconnects)
 
 If you are running training over SSH or want your training to continue even if you close your terminal, use `nohup` and bash variables for easy, robust runs.
+
+**Example:**
+```bash
+nohup lerobot-train ... > outputs/train/myrun/training.log 2>&1 &
+```
+- All output (including errors) will be saved in `training.log`.
+- The process will keep running even if you close your terminal or disconnect SSH.
 
 ## Using Bash Variables for Flexible Training
 
@@ -241,7 +213,10 @@ This command will:
 - Save all logs to a file in your output directory
 - Use your variables for easy naming and reproducibility
 
+#### Nyquist: -> batch_size=12, num_workers=6
+
 ```bash
+COMPUTER="odin" && POLICY_TYPE="smolvla" && \
 nohup lerobot-train \
   --dataset.repo_id='["Batonchegg/bimanual_blue_block_handover_1", "Batonchegg/bimanual_blue_block_handover_2", "Batonchegg/bimanual_blue_block_handover_3", "Batonchegg/bimanual_blue_block_handover_4", "Batonchegg/bimanual_blue_block_handover_5", "Batonchegg/bimanual_blue_block_handover_6"]' \
   --policy.type=$POLICY_TYPE \
@@ -252,26 +227,21 @@ nohup lerobot-train \
   --wandb.notes="Multi-dataset training on 6 bimanual handover datasets - $POLICY_TYPE on $COMPUTER" \
   --policy.repo_id="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
   --batch_size=32 \
-  --num_workers=16 \
-  --policy.use_amp=true > outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining/training.log 2>&1 &
+  --num_workers=16  > outputs/logs/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining.log 2>&1 &
+```
+#### View logs:
+  ```bash
+  tail -f outputs/logs/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining.log
+  ```
+#### Delete cmd
+
+```bash
+rm -rf outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining
 ```
 
 - Change `POLICY_TYPE` and `COMPUTER` as needed for each run.
 - All logs will be in the output folder for that run.
 - You can safely disconnect SSH and training will continue.
-
-## What does `> ... 2>&1 &` mean?
-
-- `>` redirects the standard output (what you normally see in the terminal) to a file (e.g., `training.log`).
-- `2>&1` redirects the standard error (errors and warnings) to the same place as standard output, so both go into the log file.
-- `&` at the end runs the command in the background, so you get your terminal prompt back and the process keeps running.
-
-**Example:**
-```bash
-nohup lerobot-train ... > outputs/train/myrun/training.log 2>&1 &
-```
-- All output (including errors) will be saved in `training.log`.
-- The process will keep running even if you close your terminal or disconnect SSH.
 
 ## Monitoring and Stopping Training
 
@@ -288,6 +258,40 @@ nohup lerobot-train ... > outputs/train/myrun/training.log 2>&1 &
   pkill -f lerobot-train
   ```
 
+## What does `> ... 2>&1 &` mean?
+
+- `>` redirects the standard output (what you normally see in the terminal) to a file (e.g., `training.log`).
+- `2>&1` redirects the standard error (errors and warnings) to the same place as standard output, so both go into the log file.
+- `&` at the end runs the command in the background, so you get your terminal prompt back and the process keeps running.
+
 ---
 
 You can use this method for any policy type or machine, and it is safe and simple for all users!
+
+
+
+# Evaluating Trained Models for Different Policies 
+
+Once training is complete, you can evaluate your policy using the lerobot-record command with your trained policy. This will run inference and record evaluation episodes:
+
+```bash
+COMPUTER="nyquist" && POLICY_TYPE="act" && \
+lerobot-record \
+  --robot.type=bi_so101_follower \
+  --robot.left_arm_port=/dev/ttyACM1 \
+  --robot.right_arm_port=/dev/ttyACM2 \
+  --robot.id=bimanual_so101 \
+  --robot.cameras='{"wrist_right": {"type": "opencv", "index_or_path": 0, "width": 640, "height": 480, "fps": 30}, "wrist_left": {"type": "opencv", "index_or_path": 2, "width": 640, "height": 480, "fps": 30}, "realsense_top": {"type": "intelrealsense", "serial_number_or_name": "027322073278", "width": 640, "height": 480, "fps": 30}}' \
+  --display_data=true \
+  --dataset.num_episodes=10 \
+  --policy.device=cuda \
+  \
+  --dataset.repo_id="Mimic-Robotics/eval_${POLICY_TYPE}_${COMPUTER}_bimanual_blue_block_handover" \
+  --policy.path="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
+  --dataset.single_task="Pick the BLUE object from one side with one arm and place it on the other side with other arm" 
+```
+Cmd to delete between every trial
+```bash
+rm -rf '/home/odin/.cache/huggingface/lerobot/Mimic-Robotics/eval_${POLICY_TYPE}_${COMPUTER}_bimanual_blue_block_handover'
+```
+
