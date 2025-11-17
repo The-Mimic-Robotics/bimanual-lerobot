@@ -1,0 +1,235 @@
+2025-11-16 14:57:16,971 - INFO - 🚀 Dataset Consolidation Script
+2025-11-16 14:57:16,971 - INFO - ================================================================================
+2025-11-16 14:57:17,298 - INFO - Found 21 existing datasets in Mimic-Robotics
+2025-11-16 14:57:17,298 - INFO - 
+Existing datasets in Mimic-Robotics: 21
+2025-11-16 14:57:17,298 - INFO -   - jetson_bimanual_recording_test
+2025-11-16 14:57:17,298 - INFO -   - bimanual_blue_block_handover_20
+2025-11-16 14:57:17,298 - INFO -   - bimanual_blue_block_handover_14
+2025-11-16 14:57:17,298 - INFO -   - bimanual_blue_block_handover_15
+2025-11-16 14:57:17,298 - INFO -   - bimanual_blue_block_handover_17
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_21
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_22
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_23
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_24
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_25
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_26
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_1
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_2
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_3
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_4
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_5
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_6
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_7
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_16
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_18
+2025-11-16 14:57:17,299 - INFO -   - bimanual_blue_block_handover_19
+2025-11-16 14:57:17,299 - INFO - 
+================================================================================
+2025-11-16 14:57:17,299 - INFO - Processing datasets from: Batonchegg
+2025-11-16 14:57:17,299 - INFO - ================================================================================
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_1 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_2 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_3 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_4 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_5 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_6 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - 
+================================================================================
+2025-11-16 14:57:17,299 - INFO - Processing datasets from: ac-pate
+2025-11-16 14:57:17,299 - INFO - ================================================================================
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_7 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_16 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_18 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipping bimanual_blue_block_handover_19 - already in Mimic-Robotics
+2025-11-16 14:57:17,299 - INFO - 
+================================================================================
+2025-11-16 14:57:17,299 - INFO - 📊 CONSOLIDATION SUMMARY
+2025-11-16 14:57:17,299 - INFO - ================================================================================
+2025-11-16 14:57:17,299 - INFO - Total datasets processed: 10
+2025-11-16 14:57:17,299 - INFO - ✅ Successful: 0
+2025-11-16 14:57:17,299 - INFO - ⏭️  Skipped (already exist): 10
+2025-11-16 14:57:17,299 - INFO - ❌ Failed: 0
+2025-11-16 14:57:17,299 - INFO - 
+================================================================================
+2025-11-16 14:57:17,299 - INFO - 🔄 BACKUP TO AC-PATE
+2025-11-16 14:57:17,299 - INFO - ================================================================================
+2025-11-16 14:57:17,351 - INFO - Found 21 existing datasets in Mimic-Robotics
+2025-11-16 14:57:17,398 - INFO - Found 18 datasets in ac-pate
+2025-11-16 14:57:17,398 - INFO - ⏭️  Skipping jetson_bimanual_recording_test - already in ac-pate
+2025-11-16 14:57:17,398 - INFO - ⏭️  Skipping bimanual_blue_block_handover_20 - already in ac-pate
+2025-11-16 14:57:17,398 - INFO - 
+================================================================================
+2025-11-16 14:57:17,398 - INFO - Backing up: Mimic-Robotics/bimanual_blue_block_handover_14 -> ac-pate/bimanual_blue_block_handover_14
+2025-11-16 14:57:17,398 - INFO - ================================================================================
+2025-11-16 14:57:17,443 - INFO - 📥 Downloading Mimic-Robotics/bimanual_blue_block_handover_14...
+2025-11-16 14:57:17,549 - INFO -    ⚠️ Dataset missing version tag, attempting to fix...
+2025-11-16 14:57:17,617 - WARNING -    ⚠️ Could not fix version tag: 404 Client Error. (Request ID: Root=1-691a2c9d-68821e5825bad9de7810c071;e1005f8d-1e70-4826-b2e8-5bdb5c1c9e25)
+
+Entry Not Found for url: https://huggingface.co/datasets/Mimic-Robotics/bimanual_blue_block_handover_14/resolve/main/meta/info.json.
+2025-11-16 14:57:17,617 - ERROR - ❌ Failed to backup Mimic-Robotics/bimanual_blue_block_handover_14: Your dataset must be tagged with a codebase version.
+            Assuming _version_ is the codebase_version value in the info.json, you can run this:
+            ```python
+            from huggingface_hub import HfApi
+
+            hub_api = HfApi()
+            hub_api.create_tag("Mimic-Robotics/bimanual_blue_block_handover_14", tag="_version_", repo_type="dataset")
+            ```
+            
+Traceback (most recent call last):
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 95, in __init__
+    self.load_metadata()
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 105, in load_metadata
+    self.info = load_info(self.root)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 177, in load_info
+    info = load_json(local_dir / INFO_PATH)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 145, in load_json
+    with open(fpath) as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/odin/.cache/huggingface/lerobot/Mimic-Robotics/bimanual_blue_block_handover_14/meta/info.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/odin/bimanual-lerobot/deployment/consolidate_datasets_to_mimic.py", line 208, in backup_to_account
+    dataset = LeRobotDataset(source_repo_id)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 469, in __init__
+    self.meta = LeRobotDatasetMetadata(
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 98, in __init__
+    self.revision = get_safe_version(self.repo_id, self.revision)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 329, in get_safe_version
+    raise RevisionNotFoundError(
+huggingface_hub.errors.RevisionNotFoundError: Your dataset must be tagged with a codebase version.
+            Assuming _version_ is the codebase_version value in the info.json, you can run this:
+            ```python
+            from huggingface_hub import HfApi
+
+            hub_api = HfApi()
+            hub_api.create_tag("Mimic-Robotics/bimanual_blue_block_handover_14", tag="_version_", repo_type="dataset")
+            ```
+            
+2025-11-16 14:57:17,664 - INFO - 
+================================================================================
+2025-11-16 14:57:17,664 - INFO - Backing up: Mimic-Robotics/bimanual_blue_block_handover_15 -> ac-pate/bimanual_blue_block_handover_15
+2025-11-16 14:57:17,664 - INFO - ================================================================================
+2025-11-16 14:57:17,735 - INFO - 📥 Downloading Mimic-Robotics/bimanual_blue_block_handover_15...
+2025-11-16 14:57:17,788 - INFO -    ⚠️ Dataset missing version tag, attempting to fix...
+2025-11-16 14:57:17,853 - WARNING -    ⚠️ Could not fix version tag: 404 Client Error. (Request ID: Root=1-691a2c9d-652607f51baac8823f0b7575;046e2479-682f-4856-a8a9-576b0e07250d)
+
+Entry Not Found for url: https://huggingface.co/datasets/Mimic-Robotics/bimanual_blue_block_handover_15/resolve/main/meta/info.json.
+2025-11-16 14:57:17,853 - ERROR - ❌ Failed to backup Mimic-Robotics/bimanual_blue_block_handover_15: Your dataset must be tagged with a codebase version.
+            Assuming _version_ is the codebase_version value in the info.json, you can run this:
+            ```python
+            from huggingface_hub import HfApi
+
+            hub_api = HfApi()
+            hub_api.create_tag("Mimic-Robotics/bimanual_blue_block_handover_15", tag="_version_", repo_type="dataset")
+            ```
+            
+Traceback (most recent call last):
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 95, in __init__
+    self.load_metadata()
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 105, in load_metadata
+    self.info = load_info(self.root)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 177, in load_info
+    info = load_json(local_dir / INFO_PATH)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 145, in load_json
+    with open(fpath) as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/odin/.cache/huggingface/lerobot/Mimic-Robotics/bimanual_blue_block_handover_15/meta/info.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/odin/bimanual-lerobot/deployment/consolidate_datasets_to_mimic.py", line 208, in backup_to_account
+    dataset = LeRobotDataset(source_repo_id)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 469, in __init__
+    self.meta = LeRobotDatasetMetadata(
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 98, in __init__
+    self.revision = get_safe_version(self.repo_id, self.revision)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 329, in get_safe_version
+    raise RevisionNotFoundError(
+huggingface_hub.errors.RevisionNotFoundError: Your dataset must be tagged with a codebase version.
+            Assuming _version_ is the codebase_version value in the info.json, you can run this:
+            ```python
+            from huggingface_hub import HfApi
+
+            hub_api = HfApi()
+            hub_api.create_tag("Mimic-Robotics/bimanual_blue_block_handover_15", tag="_version_", repo_type="dataset")
+            ```
+            
+2025-11-16 14:57:17,899 - INFO - 
+================================================================================
+2025-11-16 14:57:17,900 - INFO - Backing up: Mimic-Robotics/bimanual_blue_block_handover_17 -> ac-pate/bimanual_blue_block_handover_17
+2025-11-16 14:57:17,900 - INFO - ================================================================================
+2025-11-16 14:57:17,947 - INFO - 📥 Downloading Mimic-Robotics/bimanual_blue_block_handover_17...
+2025-11-16 14:57:18,009 - INFO -    ⚠️ Dataset missing version tag, attempting to fix...
+2025-11-16 14:57:18,065 - WARNING -    ⚠️ Could not fix version tag: 404 Client Error. (Request ID: Root=1-691a2c9e-01e40c651f3cc8466507e927;addacafa-1afe-4e02-ad4b-f5ee06ce55ff)
+
+Entry Not Found for url: https://huggingface.co/datasets/Mimic-Robotics/bimanual_blue_block_handover_17/resolve/main/meta/info.json.
+2025-11-16 14:57:18,065 - ERROR - ❌ Failed to backup Mimic-Robotics/bimanual_blue_block_handover_17: Your dataset must be tagged with a codebase version.
+            Assuming _version_ is the codebase_version value in the info.json, you can run this:
+            ```python
+            from huggingface_hub import HfApi
+
+            hub_api = HfApi()
+            hub_api.create_tag("Mimic-Robotics/bimanual_blue_block_handover_17", tag="_version_", repo_type="dataset")
+            ```
+            
+Traceback (most recent call last):
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 95, in __init__
+    self.load_metadata()
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 105, in load_metadata
+    self.info = load_info(self.root)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 177, in load_info
+    info = load_json(local_dir / INFO_PATH)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 145, in load_json
+    with open(fpath) as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/odin/.cache/huggingface/lerobot/Mimic-Robotics/bimanual_blue_block_handover_17/meta/info.json'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/odin/bimanual-lerobot/deployment/consolidate_datasets_to_mimic.py", line 208, in backup_to_account
+    dataset = LeRobotDataset(source_repo_id)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 469, in __init__
+    self.meta = LeRobotDatasetMetadata(
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/lerobot_dataset.py", line 98, in __init__
+    self.revision = get_safe_version(self.repo_id, self.revision)
+  File "/home/odin/bimanual-lerobot/src/lerobot/datasets/utils.py", line 329, in get_safe_version
+    raise RevisionNotFoundError(
+huggingface_hub.errors.RevisionNotFoundError: Your dataset must be tagged with a codebase version.
+            Assuming _version_ is the codebase_version value in the info.json, you can run this:
+            ```python
+            from huggingface_hub import HfApi
+
+            hub_api = HfApi()
+            hub_api.create_tag("Mimic-Robotics/bimanual_blue_block_handover_17", tag="_version_", repo_type="dataset")
+            ```
+            
+2025-11-16 14:57:18,114 - INFO - ⏭️  Skipping bimanual_blue_block_handover_21 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_22 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_23 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_24 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_25 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_26 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_1 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_2 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_3 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_4 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_5 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_6 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_7 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_16 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_18 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipping bimanual_blue_block_handover_19 - already in ac-pate
+2025-11-16 14:57:18,115 - INFO - 
+================================================================================
+2025-11-16 14:57:18,115 - INFO - � BACKUP SUMMARY
+2025-11-16 14:57:18,115 - INFO - ================================================================================
+2025-11-16 14:57:18,115 - INFO - Total datasets to backup: 21
+2025-11-16 14:57:18,115 - INFO - ✅ Successful backups: 0
+2025-11-16 14:57:18,115 - INFO - ⏭️  Skipped (already exist): 18
+2025-11-16 14:57:18,115 - INFO - ❌ Failed backups: 3
+2025-11-16 14:57:18,115 - INFO - 
+🎉 Consolidation complete! View all datasets at:
+2025-11-16 14:57:18,115 - INFO -    https://huggingface.co/datasets?other=LeRobot&sort=trending&search=author%3AMimic-Robotics
+2025-11-16 14:57:18,115 - INFO -    https://huggingface.co/datasets?other=LeRobot&sort=trending&search=author%3Aac-pate

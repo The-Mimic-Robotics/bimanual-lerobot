@@ -95,7 +95,7 @@ python -m lerobot.record \
   --teleop.id=bimanual_so101_leader \
   --display_data=true \
   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}" \
-  --dataset.repo_id="Batonchegg/bimanual_blue_block_handover_6" \
+  --dataset.repo_id="ac-pate/bimanual_blue_block_handover_14" \
   --dataset.single_task="blue_block_handover" \
   --dataset.num_episodes=25 \
   --dataset.episode_time_s=45 \
@@ -132,6 +132,7 @@ lerobot-train \
   --wandb.enable=true \
   --policy.repo_id="Batonchegg/smolVLA" \
   --batch_size=6 \
+  --steps=20000
 ```
 
 ### 🔧 Parameter Explanations
@@ -215,33 +216,104 @@ This command will:
 
 #### Nyquist: -> batch_size=12, num_workers=6
 
+## Example of training from Scratch
+
+**Use `--policy.type` when training from scratch (no pretrained model):**
+
 ```bash
 COMPUTER="odin" && POLICY_TYPE="smolvla" && \
 nohup lerobot-train \
-  --dataset.repo_id='["Batonchegg/bimanual_blue_block_handover_1", "Batonchegg/bimanual_blue_block_handover_2", "Batonchegg/bimanual_blue_block_handover_3", "Batonchegg/bimanual_blue_block_handover_4", "Batonchegg/bimanual_blue_block_handover_5", "Batonchegg/bimanual_blue_block_handover_6"]' \
+  --dataset.repo_id='["Mimic-Robotics/bimanual_blue_block_handover_1", "Mimic-Robotics/bimanual_blue_block_handover_2", "Mimic-Robotics/bimanual_blue_block_handover_3", "Mimic-Robotics/bimanual_blue_block_handover_4", "Mimic-Robotics/bimanual_blue_block_handover_5", "Mimic-Robotics/bimanual_blue_block_handover_6", "Mimic-Robotics/bimanual_blue_block_handover_7", "Mimic-Robotics/bimanual_blue_block_handover_14", "Mimic-Robotics/bimanual_blue_block_handover_15", "Mimic-Robotics/bimanual_blue_block_handover_16", "Mimic-Robotics/bimanual_blue_block_handover_17", "Mimic-Robotics/bimanual_blue_block_handover_18", "Mimic-Robotics/bimanual_blue_block_handover_19", "Mimic-Robotics/bimanual_blue_block_handover_20", "Mimic-Robotics/bimanual_blue_block_handover_21", "Mimic-Robotics/bimanual_blue_block_handover_22", "Mimic-Robotics/bimanual_blue_block_handover_23", "Mimic-Robotics/bimanual_blue_block_handover_24", "Mimic-Robotics/bimanual_blue_block_handover_25", "Mimic-Robotics/bimanual_blue_block_handover_26"]' \
   --policy.type=$POLICY_TYPE \
-  --output_dir=outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining \
-  --job_name=${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining \
+  --output_dir=outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_FromScratch \
+  --job_name=${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_FromScratch \
   --policy.device=cuda \
   --wandb.enable=true \
-  --wandb.notes="Multi-dataset training on 6 bimanual handover datasets - $POLICY_TYPE on $COMPUTER" \
+  --wandb.notes="Multi-dataset training on 20 bimanual handover datasets - $POLICY_TYPE on $COMPUTER - From Scratch" \
   --policy.repo_id="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
   --batch_size=32 \
-  --num_workers=16  > outputs/logs/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining.log 2>&1 &
+  --num_workers=16 \
+  --steps=20000 \
+  > outputs/logs/${POLICY_TYPE}_${COMPUTER}_FromScratch.log 2>&1 &
 ```
+
 #### View logs:
   ```bash
-  tail -f outputs/logs/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining.log
+  tail -f outputs/logs/${POLICY_TYPE}_${COMPUTER}_FromScratch.log
   ```
-#### Delete cmd
-
+  
+#### Delete output dir:
 ```bash
-rm -rf outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_MultiDatasetTraining
+rm -rf outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_FromScratch
 ```
 
-- Change `POLICY_TYPE` and `COMPUTER` as needed for each run.
-- All logs will be in the output folder for that run.
-- You can safely disconnect SSH and training will continue.
+---
+
+## Example of Transfer Learning from Pretrained Model/Policy
+
+**Use `--policy.path` when fine-tuning a pretrained model (NOT --policy.type):**
+
+### Using SmolVLA Base (Recommended)
+
+```bash
+COMPUTER="odin" && POLICY_TYPE="smolvla" && \
+nohup lerobot-train \
+  --dataset.repo_id='["Mimic-Robotics/bimanual_blue_block_handover_1", "Mimic-Robotics/bimanual_blue_block_handover_2", "Mimic-Robotics/bimanual_blue_block_handover_3", "Mimic-Robotics/bimanual_blue_block_handover_4", "Mimic-Robotics/bimanual_blue_block_handover_5", "Mimic-Robotics/bimanual_blue_block_handover_6", "Mimic-Robotics/bimanual_blue_block_handover_7", "Mimic-Robotics/bimanual_blue_block_handover_14", "Mimic-Robotics/bimanual_blue_block_handover_15", "Mimic-Robotics/bimanual_blue_block_handover_16", "Mimic-Robotics/bimanual_blue_block_handover_17", "Mimic-Robotics/bimanual_blue_block_handover_18", "Mimic-Robotics/bimanual_blue_block_handover_19", "Mimic-Robotics/bimanual_blue_block_handover_20", "Mimic-Robotics/bimanual_blue_block_handover_21", "Mimic-Robotics/bimanual_blue_block_handover_22", "Mimic-Robotics/bimanual_blue_block_handover_23", "Mimic-Robotics/bimanual_blue_block_handover_24", "Mimic-Robotics/bimanual_blue_block_handover_25", "Mimic-Robotics/bimanual_blue_block_handover_26"]' \
+  --policy.path=lerobot/smolvla_base \
+  --output_dir=outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_TransferLearning \
+  --job_name=${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_TransferLearning \
+  --policy.device=cuda \
+  --wandb.enable=true \
+  --wandb.notes="Transfer learning on 20 bimanual handover datasets - $POLICY_TYPE on $COMPUTER" \
+  --policy.repo_id="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
+  --batch_size=32 \
+  --num_workers=16 \
+  --steps=20000 \
+  > outputs/logs/${POLICY_TYPE}_${COMPUTER}_TransferLearning.log 2>&1 &
+```
+
+### Using Your Own Trained Model
+
+```bash
+COMPUTER="odin" && POLICY_TYPE="smolvla" && \
+nohup lerobot-train \
+  --dataset.repo_id='["Mimic-Robotics/bimanual_blue_block_handover_1", ...]' \
+  --policy.path=Mimic-Robotics/${POLICY_TYPE}_previous_training \
+  --output_dir=outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_Continued \
+  --job_name=${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_Continued \
+  --policy.device=cuda \
+  --wandb.enable=true \
+  --wandb.notes="Continued training from previous checkpoint" \
+  --policy.repo_id="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
+  --batch_size=32 \
+  --num_workers=16 \
+  --steps=20000 \
+  > outputs/logs/${POLICY_TYPE}_${COMPUTER}_Continued.log 2>&1 &
+```
+
+#### Available Pretrained Models:
+- **lerobot/smolvla_base** - Recommended SmolVLA base model (450M params)
+- **lerobot/smolvla_anyrobot** - SmolVLA trained on multiple robot tasks
+- **Mimic-Robotics/{your_model}** - Your previously trained models
+- See more at: https://huggingface.co/docs/lerobot/en/smolvla
+
+#### View logs:
+```bash
+tail -f outputs/logs/${POLICY_TYPE}_${COMPUTER}_TransferLearning.log
+```
+
+#### Delete output dir:
+```bash
+rm -rf outputs/train/${POLICY_TYPE}_${COMPUTER}_Bimanual_Handover_TransferLearning
+```
+
+---
+
+### 🔑 Key Difference:
+- **From Scratch:** `--policy.type=smolvla` (initializes new random weights)
+- **Transfer Learning:** `--policy.path=lerobot/smolvla_base` (loads pretrained weights)
+
+**❌ DO NOT use both --policy.type and --policy.path together!**
 
 ## Monitoring and Stopping Training
 
