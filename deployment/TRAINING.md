@@ -96,7 +96,7 @@ python -m lerobot.record \
   --display_data=true \
   --robot.cameras="{wrist_right: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, wrist_left: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}, realsense_top: {type: intelrealsense, serial_number_or_name: \"027322073278\", width: 640, height: 480, fps: 30}}" \
   --dataset.repo_id="ac-pate/bimanual_blue_block_handover_14" \
-  --dataset.single_task="blue_block_handover" \
+  --dataset.single_task="Grasp the blue block from one side using one arm and transfer it to the other arm on the opposite side" \
   --dataset.num_episodes=25 \
   --dataset.episode_time_s=45 \
   --dataset.reset_time_s=5 \
@@ -360,7 +360,7 @@ lerobot-record \
   \
   --dataset.repo_id="Mimic-Robotics/eval_${POLICY_TYPE}_${COMPUTER}_bimanual_blue_block_handover" \
   --policy.path="Mimic-Robotics/${POLICY_TYPE}_${COMPUTER}_bimanual_handover" \
-  --dataset.single_task="Pick the BLUE object from one side with one arm and place it on the other side with other arm" 
+  --dataset.single_task="Grasp the blue block from one side using one arm and transfer it to the other arm on the opposite side" 
 ```
 Cmd to delete between every trial
 ```bash
