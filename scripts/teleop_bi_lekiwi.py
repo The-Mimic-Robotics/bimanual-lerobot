@@ -359,6 +359,7 @@ class BiLeKiwiTeleop:
         
         # Create leader teleoperator
         teleop_config = BiSO101LeaderConfig(
+            id="bi_so101_leader",
             left_arm_port=self.config.left_master_port,
             right_arm_port=self.config.right_master_port,
             use_degrees=self.config.use_degrees,
