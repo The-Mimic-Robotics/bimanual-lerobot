@@ -70,6 +70,16 @@ class TeleopConfig:
     base_serial_port: str = "/dev/ttyUSB0"
     base_baudrate: int = 115200
     
+    # Camera settings
+    enable_cameras: bool = False
+    top_camera: str = "/dev/video0"  # Overhead camera
+    left_wrist_camera: str = "/dev/video2"  # Left gripper camera
+    right_wrist_camera: str = "/dev/video4"  # Right gripper camera
+    camera_width: int = 640
+    camera_height: int = 480
+    camera_fps: int = 30
+    display_cameras: bool = False  # Show live camera feed
+    
     # Control settings
     teleop_freq: float = 50.0  # Hz
     use_degrees: bool = True
@@ -311,13 +321,39 @@ class BiLeKiwiTeleop:
         
         # We'll control base via serial, so create arms-only version
         from lerobot.robots.bi_so101_follower import BiSO101Follower, BiSO101FollowerConfig
+        from lerobot.cameras.opencv.configuration_opencv import OpenCVCameraConfig
+        
+        # Configure cameras if enabled
+        cameras = {}
+        if self.config.enable_cameras:
+            cameras = {
+                "top": OpenCVCameraConfig(
+                    index_or_path=self.config.top_camera,
+                    width=self.config.camera_width,
+                    height=self.config.camera_height,
+                    fps=self.config.camera_fps,
+                ),
+                "left_wrist": OpenCVCameraConfig(
+                    index_or_path=self.config.left_wrist_camera,
+                    width=self.config.camera_width,
+                    height=self.config.camera_height,
+                    fps=self.config.camera_fps,
+                ),
+                "right_wrist": OpenCVCameraConfig(
+                    index_or_path=self.config.right_wrist_camera,
+                    width=self.config.camera_width,
+                    height=self.config.camera_height,
+                    fps=self.config.camera_fps,
+                ),
+            }
+            logger.info(f"Cameras enabled: {list(cameras.keys())}")
         
         arm_config = BiSO101FollowerConfig(
             left_arm_port=self.config.left_follower_port,
             right_arm_port=self.config.right_follower_port,
             left_arm_use_degrees=self.config.use_degrees,
             right_arm_use_degrees=self.config.use_degrees,
-            cameras={},
+            cameras=cameras,
         )
         self.robot = BiSO101Follower(arm_config)
         
@@ -368,6 +404,16 @@ class BiLeKiwiTeleop:
         period = 1.0 / self.config.teleop_freq
         logger.info(f"Teleop loop: {self.config.teleop_freq} Hz")
         
+        # Import cv2 if displaying cameras
+        cv2 = None
+        if self.config.enable_cameras and self.config.display_cameras:
+            try:
+                import cv2 as _cv2
+                cv2 = _cv2
+                logger.info("Camera display enabled (press 'q' in window to quit)")
+            except ImportError:
+                logger.warning("opencv-python not available for display")
+        
         try:
             while not self.should_stop.is_set() and not self.keyboard.should_stop.is_set():
                 start = time.perf_counter()
@@ -383,6 +429,16 @@ class BiLeKiwiTeleop:
                 
                 # Send base velocity to ESP32
                 self.base.send_velocity(vx, vy, omega)
+                
+                # Display cameras if enabled
+                if cv2 is not None and self.config.enable_cameras:
+                    obs = self.robot.get_observation()
+                    for cam_name in ["top", "left_wrist", "right_wrist"]:
+                        if cam_name in obs:
+                            cv2.imshow(f"BiLeKiwi - {cam_name}", obs[cam_name])
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        logger.info("'q' pressed in camera window - stopping")
+                        break
                 
                 # Maintain loop rate
                 elapsed = time.perf_counter() - start
@@ -414,12 +470,27 @@ class BiLeKiwiTeleop:
 def main():
     parser = argparse.ArgumentParser(description="BiLeKiwi Teleoperation")
     
+    # Arm ports
     parser.add_argument("--left-master-port", default="/dev/ttyACM0")
     parser.add_argument("--right-master-port", default="/dev/ttyACM1")
     parser.add_argument("--left-follower-port", default="/dev/ttyACM2")
     parser.add_argument("--right-follower-port", default="/dev/ttyACM3")
     parser.add_argument("--base-serial-port", default="/dev/ttyUSB0",
                        help="ESP32 mecanum controller serial port")
+    
+    # Camera settings
+    parser.add_argument("--enable-cameras", action="store_true",
+                       help="Enable cameras for recording/display")
+    parser.add_argument("--top-camera", default="/dev/video0",
+                       help="Top/overhead camera device")
+    parser.add_argument("--left-wrist-camera", default="/dev/video2",
+                       help="Left gripper camera device")
+    parser.add_argument("--right-wrist-camera", default="/dev/video4",
+                       help="Right gripper camera device")
+    parser.add_argument("--display-cameras", action="store_true",
+                       help="Show live camera feeds in windows")
+    
+    # Control settings
     parser.add_argument("--freq", type=float, default=50.0)
     parser.add_argument("--linear-speed", type=float, default=0.3)
     parser.add_argument("--angular-speed", type=float, default=0.5)
@@ -432,6 +503,11 @@ def main():
         left_follower_port=args.left_follower_port,
         right_follower_port=args.right_follower_port,
         base_serial_port=args.base_serial_port,
+        enable_cameras=args.enable_cameras,
+        top_camera=args.top_camera,
+        left_wrist_camera=args.left_wrist_camera,
+        right_wrist_camera=args.right_wrist_camera,
+        display_cameras=args.display_cameras,
         teleop_freq=args.freq,
         linear_speed=args.linear_speed,
         angular_speed=args.angular_speed,

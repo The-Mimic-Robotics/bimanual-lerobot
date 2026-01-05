@@ -156,3 +156,20 @@ We welcome contributions from everyone in the community! To get started, please 
 <div align="center">
 <sub>Built by the <a href="https://huggingface.co/lerobot">LeRobot</a> team at <a href="https://huggingface.co">Hugging Face</a> with ❤️</sub>
 </div>
+
+
+
+
+pip install pynput pyserial
+
+python scripts/teleop_bi_lekiwi.py \
+    --left-master-port /dev/ttyACM0 \
+    --right-master-port /dev/ttyACM1 \
+    --left-follower-port /dev/ttyACM2 \
+    --right-follower-port /dev/ttyACM3 \
+    --base-serial-port /dev/ttyUSB0 \
+    --enable-cameras \
+    --display-cameras \
+    --top-camera /dev/video0 \
+    --left-wrist-camera /dev/video2 \
+    --right-wrist-camera /dev/video4
