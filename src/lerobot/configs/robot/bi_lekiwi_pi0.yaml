@@ -1,0 +1,72 @@
+# BiLeKiwi Pi-0 Training Configuration
+#
+# Train Pi-0 (Physical Intelligence's generalist policy) on bimanual + mobile base robot.
+# This config uses the latest Pi-0 from upstream LeRobot.
+#
+# Usage:
+#   python -m lerobot.scripts.train \
+#       --config_path=src/lerobot/configs/robot/bi_lekiwi_pi0.yaml
+#
+# For fine-tuning from pretrained:
+#   python -m lerobot.scripts.train \
+#       --policy.path=lerobot/pi0_base \
+#       --dataset.repo_id=Mimic-Robotics/bimanual_blue_block_handover_26
+
+# Dataset configuration - Multi-dataset training
+dataset:
+  repo_id:
+    - Mimic-Robotics/bimanual_blue_block_handover_26
+    - Mimic-Robotics/bimanual_blue_block_handover_25
+    - Mimic-Robotics/bimanual_blue_block_handover_24
+    - Mimic-Robotics/bimanual_blue_block_handover_23
+    - Mimic-Robotics/bimanual_blue_block_handover_22
+    - Mimic-Robotics/bimanual_blue_block_handover_21
+
+# Policy: Pi-0 (from Physical Intelligence)
+policy:
+  type: pi0
+  
+  # Pre-trained model for fine-tuning (optional)
+  # path: lerobot/pi0_base
+  
+  # Pi-0 specific settings
+  use_delta_joint_actions_aloha: false
+  chunk_size: 50
+  n_action_steps: 50
+  
+  # Vision encoder (PaLI-Gemma based)
+  freeze_vision_encoder: true
+  
+  # Expert-only training (for action diffusion head)
+  train_expert_only: false
+
+# Training configuration
+training:
+  batch_size: 16  # Pi-0 is memory-intensive
+  steps: 100000
+  learning_rate: 1.0e-5
+  lr_scheduler: cosine
+  warmup_steps: 2000
+  
+  # Gradient accumulation for larger effective batch size
+  gradient_accumulation_steps: 2
+  
+  # Mixed precision training
+  mixed_precision: bf16  # Pi-0 works best with bfloat16
+  
+  # Checkpointing
+  save_steps: 10000
+  eval_steps: 5000
+
+# Logging
+wandb:
+  enable: true
+  project: bi_lekiwi_pi0
+  entity: null  # Set to your wandb username
+
+# Hardware
+device: cuda
+num_workers: 4
+
+# Output directory
+output_dir: outputs/bi_lekiwi_pi0

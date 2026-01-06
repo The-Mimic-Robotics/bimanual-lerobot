@@ -1,0 +1,79 @@
+# BiLeKiwi Multi-Dataset Training Configuration
+#
+# Train Pi-0 or SmolVLA on bimanual manipulation datasets with mobile base support.
+# This config uses MultiLeRobotDataset to train on multiple datasets simultaneously.
+#
+# Usage:
+#   python -m lerobot.scripts.train --config_path=src/lerobot/configs/robot/bi_lekiwi_training.yaml
+#
+# For dry run (no GPU required):
+#   python -m lerobot.scripts.train --config_path=src/lerobot/configs/robot/bi_lekiwi_training.yaml \
+#       --training.steps=10 --dry_run=true
+
+# Dataset configuration
+dataset:
+  # Multi-dataset training on Mimic-Robotics bimanual datasets
+  # These datasets have 12 DOF (bimanual arms only)
+  # Base actions will be zero-padded during training
+  repo_id:
+    - Mimic-Robotics/bimanual_blue_block_handover_26
+    - Mimic-Robotics/bimanual_blue_block_handover_25
+    - Mimic-Robotics/bimanual_blue_block_handover_24
+    - Mimic-Robotics/bimanual_blue_block_handover_23
+    - Mimic-Robotics/bimanual_blue_block_handover_22
+    - Mimic-Robotics/bimanual_blue_block_handover_21
+  
+  # Delta timestamps for temporal context
+  delta_timestamps:
+    observation.images.realsense_left: [-0.1, 0.0]
+    observation.images.realsense_right: [-0.1, 0.0]
+    observation.images.left_wrist: [-0.1, 0.0]
+    observation.images.right_wrist: [-0.1, 0.0]
+    observation.state: [-0.1, 0.0]
+    action: [0.0, 0.033, 0.067, 0.1, 0.133, 0.167, 0.2, 0.233, 0.267, 0.3]
+
+# Policy configuration
+policy:
+  # Choose: pi0, pi0fast, smolvla, act, diffusion
+  type: smolvla
+  
+  # SmolVLA-specific settings
+  pretrained_path: lerobot/smolvla_base
+  chunk_size: 50
+  n_action_steps: 50
+  
+  # Vision encoder settings
+  vision_encoder:
+    type: siglip
+    pretrained: google/siglip-so400m-patch14-384
+
+# Training configuration
+training:
+  batch_size: 32
+  steps: 50000
+  learning_rate: 1.0e-4
+  lr_scheduler: cosine
+  warmup_steps: 1000
+  
+  # Gradient accumulation for larger effective batch size
+  gradient_accumulation_steps: 1
+  
+  # Mixed precision training
+  mixed_precision: fp16
+  
+  # Checkpointing
+  save_steps: 5000
+  eval_steps: 2500
+
+# Logging
+wandb:
+  enable: true
+  project: bi_lekiwi_training
+  entity: null  # Set to your wandb username or team
+
+# Hardware
+device: cuda
+num_workers: 4
+
+# Output directory
+output_dir: outputs/bi_lekiwi_smolvla
